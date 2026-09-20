@@ -1,5 +1,7 @@
 # Чистый JavaScript Lab
 
+![JavaScript](JavaScript.png)
+
 В разработке — план ещё не составлен.
 
 Лаба про JavaScript без фреймворка: event loop, замыкания, прототипы,
