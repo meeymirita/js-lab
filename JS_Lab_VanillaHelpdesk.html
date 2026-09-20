@@ -1,0 +1,2424 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JS Lab — Vanilla Helpdesk: чистый JavaScript с нуля</title>
+<style>
+  :root { --red: #b8860b; --red-dark: #7a5c00; --red-light: #fff8e1; --red-mid: #ecd98d; --ink: #1c1c1c; }
+  body { font-family: 'DejaVu Sans', 'Segoe UI', Arial, sans-serif; font-size: 14px; line-height: 1.6; color: var(--ink); }
+  h1 { font-size: 28px; color: var(--red); margin-bottom: 4px; }
+  .subtitle { font-size: 15px; color: #555; margin-top: 0; margin-bottom: 18px; }
+  h2 { font-size: 21px; color: var(--red-dark); border-bottom: 3px solid var(--red-mid); padding-bottom: 4px; margin-top: 44px; }
+  h3 { font-size: 16px; color: #333; margin-top: 24px; margin-bottom: 6px; }
+  h4 { font-size: 14px; color: #555; margin-top: 16px; margin-bottom: 4px; }
+  p { margin: 7px 0; }
+  code { background: #faf6ea; padding: 1px 5px; border-radius: 3px; font-family: 'DejaVu Sans Mono', Menlo, Consolas, monospace; font-size: 12.5px; }
+  pre { background: #fdfaf0; border: 1px solid #e8dcb0; border-left: 4px solid var(--red); border-radius: 4px; padding: 10px 12px; font-family: 'DejaVu Sans Mono', Menlo, Consolas, monospace; font-size: 12px; line-height: 1.4; white-space: pre-wrap; word-wrap: break-word; }
+  pre code { background: none; padding: 0; font-size: inherit; }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0 16px 0; font-size: 12.5px; }
+  th, td { border: 1px solid #ddd; padding: 6px 9px; text-align: left; vertical-align: top; }
+  th { background: var(--red-light); color: var(--red-dark); }
+  tr:nth-child(even) td { background: #fafafa; }
+  ul, ol { margin: 4px 0 10px 0; padding-left: 22px; }
+  li { margin: 3px 0; }
+  .tag { display: inline-block; color: #fff; font-size: 11px; font-weight: bold; padding: 1px 8px; border-radius: 3px; margin-bottom: 5px; }
+  .insight-box { background: var(--red-light); border: 1px solid var(--red-mid); border-left: 5px solid var(--red); border-radius: 4px; padding: 8px 14px; margin: 12px 0; }
+  .insight-box .tag { background: var(--red); }
+  .fix-box { background: #f1faf3; border: 1px solid #bfe4c7; border-left: 5px solid #2f9e4a; border-radius: 4px; padding: 8px 14px; margin: 6px 0 14px 0; }
+  .fix-box .tag { background: #2f9e4a; }
+  .note-box { background: #f4f4f6; border: 1px solid #d9d9e0; border-left: 5px solid #555a6e; border-radius: 4px; padding: 8px 14px; margin: 12px 0; }
+  .note-box .tag { background: #555a6e; }
+  .next-box { background: #fff8e6; border: 1px solid #f0dca0; border-left: 5px solid #e0a800; border-radius: 4px; padding: 8px 14px; margin: 14px 0 6px 0; font-size: 13px; }
+  .next-box .tag { background: #e0a800; color: #3a2a00; }
+  .next-box ul { margin: 4px 0 2px 0; }
+  details.deep { border: 1px dashed var(--red-mid); border-radius: 4px; margin: 12px 0; background: #fff; }
+  details.deep summary { cursor: pointer; padding: 8px 14px; font-weight: bold; color: var(--red-dark); background: #fbf4de; border-radius: 4px; list-style: none; }
+  details.deep summary::before { content: '▸ '; }
+  details.deep[open] summary::before { content: '▾ '; }
+  details.deep .deep-body { padding: 6px 16px 10px 16px; }
+  .toc { background: #fcf9ec; border: 1px solid #e8dcb0; border-radius: 6px; padding: 14px 20px; margin: 16px 0 24px 0; }
+  .toc ol { padding-left: 18px; }
+  .small { font-size: 12px; color: #777; }
+  .fnref { color: var(--red); font-weight: bold; font-size: 0.75em; }
+  .glossary-item { margin: 0 0 10px 0; padding-left: 24px; text-indent: -24px; }
+  .glossary-item b { color: var(--red-dark); }
+  .step { margin: 22px 0 10px 0; }
+  .step-head { display: block; background: var(--red-dark); color: #fff; padding: 6px 12px; border-radius: 4px 4px 0 0; font-weight: bold; font-size: 14px; }
+  .step-head .num { display: inline-block; background: #fff; color: var(--red-dark); padding: 0 8px; border-radius: 3px; margin-right: 8px; font-size: 12.5px; }
+  .step-body { border: 1px solid var(--red-mid); border-top: none; border-radius: 0 0 4px 4px; padding: 10px 14px; }
+  .step-body pre { margin: 8px 0; }
+  .why { background: #fff8e6; border-left: 4px solid #e0a800; padding: 6px 12px; margin: 10px 0 4px 0; font-size: 13px; }
+  .why b { color: #8a6500; }
+  .file { font-family: 'DejaVu Sans Mono', Menlo, monospace; font-size: 12px; color: var(--red-dark); background: #fdecea; padding: 1px 6px; border-radius: 3px; }
+  .session-banner { background: linear-gradient(90deg, var(--red-dark), var(--red)); color: #fff; padding: 10px 16px; border-radius: 6px; margin: 28px 0 12px 0; font-size: 17px; font-weight: bold; }
+  .session-banner span { font-weight: normal; font-size: 12px; opacity: 0.9; margin-left: 10px; }
+  .page-break { display: none; }
+  .life { font-family: 'DejaVu Sans Mono', Menlo, monospace; font-size: 12px; }
+
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: #fff; }
+  .layout { display: flex; align-items: flex-start; }
+  .sidebar { position: sticky; top: 0; height: 100vh; overflow-y: auto; width: 300px; flex: 0 0 300px; background: var(--red-dark); color: #fff; padding: 52px 12px 16px 12px; box-sizing: border-box; font-size: 12.5px; transition: margin-left .2s; }
+  body.nav-collapsed .sidebar { margin-left: -300px; }
+  .sidebar .nav-title { font-size: 16px; font-weight: bold; color: #fff; margin-bottom: 8px; }
+  .sidebar ul { list-style: none; padding-left: 0; margin: 0; }
+  .sidebar li { margin: 1px 0; }
+  .sidebar a { color: #fff; text-decoration: none; display: block; padding: 4px 8px; border-radius: 4px; }
+  .sidebar a:hover { background: #fff; color: var(--red-dark); }
+  .sidebar .nav-steps { padding-left: 8px; border-left: 2px solid rgba(255,255,255,.4); margin: 4px 0 6px 8px; }
+  .sidebar .nav-steps a { font-size: 11.5px; color: #ecdfae; }
+  .sidebar .nav-steps a:hover { color: var(--red-dark); }
+  .sidebar .nav-session a { color: #fff; font-weight: bold; margin-top: 6px; background: rgba(255,255,255,.12); }
+  .sidebar a .mark { display: inline-block; width: 14px; color: #fff; font-weight: bold; }
+  .sidebar a.done { opacity: .75; }
+  .sidebar a.done .mark::before { content: '✓'; }
+  .sidebar .progress { margin: 6px 0 12px 0; }
+  .sidebar .bar { height: 8px; background: rgba(255,255,255,.25); border-radius: 4px; overflow: hidden; }
+  .sidebar .fill { height: 100%; width: 0; background: #fff; transition: width .3s; }
+  .sidebar .ptext { font-size: 11px; margin-top: 4px; color: #ecdfae; }
+  .sidebar .reset { margin-top: 16px; background: transparent; border: 1px solid rgba(255,255,255,.5); color: #fff; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; }
+  .sidebar .reset:hover { background: #fff; color: var(--red-dark); }
+  #nav-toggle { position: fixed; top: 10px; left: 10px; z-index: 20; background: var(--red); color: #fff; border: none; border-radius: 6px; width: 38px; height: 34px; font-size: 20px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,.25); }
+  #nav-toggle:hover { background: var(--red-dark); }
+  main { flex: 1; max-width: 960px; padding: 24px 44px 90px 44px; box-sizing: border-box; min-width: 0; }
+  body.nav-collapsed main { padding-left: 64px; }
+  h2, .step, .glossary-item, .session-banner { scroll-margin-top: 16px; }
+  a { color: var(--red); }
+  a.anchor { color: #d9c583; text-decoration: none; margin-left: 6px; font-weight: normal; font-size: 0.8em; opacity: 0; }
+  h2:hover a.anchor, .step-head:hover a.anchor { opacity: 1; }
+  .step-head a.anchor { color: #fff; float: right; }
+  a.fnref { text-decoration: none; vertical-align: super; padding: 0 2px; }
+  a.fnref:hover { background: var(--red-light); border-radius: 3px; }
+  a.back { text-decoration: none; font-size: 0.9em; color: #b89a3f; margin-left: 4px; }
+  .glossary-item:target, .step:target { outline: 2px solid var(--red); outline-offset: 4px; border-radius: 4px; }
+  h2:target { background: var(--red-light); }
+  .done-label { display: inline-block; margin-right: 8px; vertical-align: middle; }
+  .done-label input { width: 18px; height: 18px; accent-color: var(--red); cursor: pointer; vertical-align: middle; }
+  .step-head .done-label input { accent-color: #fff; }
+  h2.is-done { color: #999; border-bottom-color: #ddd; }
+  .step.is-done .step-head { background: #9e9e9e; }
+  .step.is-done .step-body { border-color: #ddd; }
+  .totop { position: fixed; right: 24px; bottom: 24px; background: var(--red); color: #fff; text-decoration: none; padding: 8px 12px; border-radius: 20px; font-size: 12px; box-shadow: 0 2px 8px rgba(0,0,0,.25); }
+  @media (max-width: 900px) { .sidebar { position: fixed; z-index: 10; } main { padding: 56px 16px 60px 16px; } body.nav-collapsed main { padding-left: 16px; } }
+  @media print { .sidebar, .totop, #nav-toggle, a.anchor, a.back, .done-label { display: none; } .layout { display: block; } main { max-width: none; padding: 0; } a { color: inherit; text-decoration: none; } details.deep { border: none; } details.deep summary { display: none; } details.deep .deep-body { display: block; } }
+</style>
+</head>
+<body id="top">
+<button id="nav-toggle">✕</button>
+<div class="layout">
+<nav class="sidebar" id="sidebar">
+<div class="nav-title">🟡 JS Lab — Vanilla Helpdesk</div>
+<div class="progress"><div class="bar"><div class="fill" id="progress-fill"></div></div><div class="ptext" id="progress-text">0 / 0</div></div>
+<ul>
+<li><a href="#sec-1" data-key="sec-1"><span class="mark"></span>1. Зачем это</a>
+</li>
+<li><a href="#sec-2" data-key="sec-2"><span class="mark"></span>2. Переменные и область видимости</a>
+</li>
+<li><a href="#sec-3" data-key="sec-3"><span class="mark"></span>3. Типы и приведение</a>
+</li>
+<li><a href="#sec-4" data-key="sec-4"><span class="mark"></span>4. Объекты и массивы</a>
+</li>
+<li><a href="#sec-5" data-key="sec-5"><span class="mark"></span>5. this и вызов функций</a>
+</li>
+<li><a href="#sec-6" data-key="sec-6"><span class="mark"></span>6. Замыкания и паттерны</a>
+</li>
+<li><a href="#sec-7" data-key="sec-7"><span class="mark"></span>7. Прототипы и class</a>
+</li>
+<li><a href="#sec-8" data-key="sec-8"><span class="mark"></span>8. Symbol и коллекции</a>
+</li>
+<li><a href="#sec-9" data-key="sec-9"><span class="mark"></span>9. Event Loop</a>
+</li>
+<li><a href="#sec-10" data-key="sec-10"><span class="mark"></span>10. Callback → Promise → async/await</a>
+</li>
+<li><a href="#sec-11" data-key="sec-11"><span class="mark"></span>11. fetch и AbortController</a>
+</li>
+<li><a href="#sec-12" data-key="sec-12"><span class="mark"></span>12. DOM без фреймворка</a>
+</li>
+<li><a href="#sec-13" data-key="sec-13"><span class="mark"></span>13. Модули: ESM vs CommonJS</a>
+</li>
+<li><a href="#sec-14" data-key="sec-14"><span class="mark"></span>14. Storage и своя реактивность</a>
+</li>
+<li><a href="#sec-15" data-key="sec-15"><span class="mark"></span>15. Архитектура практики</a>
+</li>
+<li><a href="#sec-16" data-key="sec-16"><span class="mark"></span>16. Задания (8 сессий)</a>
+<ul class="nav-steps">
+<li class="nav-session"><a href="#session-1">Сессия 1</a></li>
+<li><a href="#step-1-1" data-key="step-1-1"><span class="mark"></span>1.1 Стенд</a></li>
+<li><a href="#step-1-2" data-key="step-1-2"><span class="mark"></span>1.2 var-в-цикле: 3 способа починить</a></li>
+<li><a href="#step-1-3" data-key="step-1-3"><span class="mark"></span>1.3 TDZ и hoisting: 5 экспериментов</a></li>
+<li class="nav-session"><a href="#session-2">Сессия 2</a></li>
+<li><a href="#step-2-1" data-key="step-2-1"><span class="mark"></span>2.1 Приведение типов + falsy-ловушка</a></li>
+<li><a href="#step-2-2" data-key="step-2-2"><span class="mark"></span>2.2 Циклы → функциональный стиль</a></li>
+<li class="nav-session"><a href="#session-3">Сессия 3</a></li>
+<li><a href="#step-3-1" data-key="step-3-1"><span class="mark"></span>3.1 this: 4 способа сохранить контекст</a></li>
+<li><a href="#step-3-2" data-key="step-3-2"><span class="mark"></span>3.2 Каррирование + мемоизация с замером в…</a></li>
+<li><a href="#step-3-3" data-key="step-3-3"><span class="mark"></span>3.3 Приватность: замыкание vs #private</a></li>
+<li class="nav-session"><a href="#session-4">Сессия 4</a></li>
+<li><a href="#step-4-1" data-key="step-4-1"><span class="mark"></span>4.1 Прототипы: Object.create vs class</a></li>
+<li><a href="#step-4-2" data-key="step-4-2"><span class="mark"></span>4.2 class: #private + static + extends/su…</a></li>
+<li><a href="#step-4-3" data-key="step-4-3"><span class="mark"></span>4.3 Map/Set/WeakMap: счётчик просмотров</a></li>
+<li class="nav-session"><a href="#session-5">Сессия 5</a></li>
+<li><a href="#step-5-1" data-key="step-5-1"><span class="mark"></span>5.1 Event Loop: угадай порядок</a></li>
+<li><a href="#step-5-2" data-key="step-5-2"><span class="mark"></span>5.2 fetch + AbortController: отмена запро…</a></li>
+<li><a href="#step-5-3" data-key="step-5-3"><span class="mark"></span>5.3 debounce/throttle + node --test</a></li>
+<li class="nav-session"><a href="#session-6">Сессия 6</a></li>
+<li><a href="#step-6-1" data-key="step-6-1"><span class="mark"></span>6.1 Свой статический сервер (node:http)</a></li>
+<li><a href="#step-6-2" data-key="step-6-2"><span class="mark"></span>6.2 Рендер + делегирование + PATCH</a></li>
+<li class="nav-session"><a href="#session-7">Сессия 7</a></li>
+<li><a href="#step-7-1" data-key="step-7-1"><span class="mark"></span>7.1 ESM в браузере без бандлера</a></li>
+<li><a href="#step-7-2" data-key="step-7-2"><span class="mark"></span>7.2 localStorage + событие storage</a></li>
+<li><a href="#step-7-3" data-key="step-7-3"><span class="mark"></span>7.3 reactive()+effect(): автотрекинг + ба…</a></li>
+<li class="nav-session"><a href="#session-8">Сессия 8</a></li>
+<li><a href="#step-8-1" data-key="step-8-1"><span class="mark"></span>8.1 Свой роутер на history.pushState</a></li>
+<li><a href="#step-8-2" data-key="step-8-2"><span class="mark"></span>8.2 Store + views + единственный effect()</a></li>
+<li><a href="#step-8-3" data-key="step-8-3"><span class="mark"></span>8.3 Тесты: reactive() и store на node --t…</a></li>
+<li><a href="#step-8-4" data-key="step-8-4"><span class="mark"></span>8.4 Финал: карта проекта + сравнение с Vue</a></li>
+</ul>
+</li>
+<li><a href="#sec-17" data-key="sec-17"><span class="mark"></span>17. Чек-лист концепций</a>
+</li>
+<li><a href="#sec-18" data-key="sec-18"><span class="mark"></span>18. Глоссарий</a>
+</li>
+<li><a href="#sec-19" data-key="sec-19"><span class="mark"></span>19. Вопросы для собеседования</a>
+</li>
+<li><a href="#sec-20" data-key="sec-20"><span class="mark"></span>20. Что дальше</a>
+</li>
+</ul><button class="reset" id="reset-progress" title="Сбросить все галочки">Сбросить прогресс</button></nav>
+<main>
+
+<h1>🟡 JS Lab — Vanilla Helpdesk</h1>
+<p class="subtitle">Чистый JavaScript с нуля: от var/let/const до собственной реактивности на Proxy и мини-SPA без фреймворка. Общий фундамент для Vue и TypeScript лаб. Стек: Node.js 22, нативные ES-модули в браузере (без бандлера), json-server для fetch-практики, встроенный node --test для тестов.</p>
+
+<div class="toc"><b>Как устроена лаба.</b> Разделы 1-9 — теория языка и рантайма: от типичных багов без понимания фундамента до event loop, DOM и модулей. Раздел 10 — восемь сессий заданий по нарастанию: язык в Node-песочнице (сессии 1-4) → асинхронность и fetch (сессия 5) → браузер без фреймворка (сессии 6-7) → мини-SPA с собственным роутером, стором на Proxy и сравнением с Vue (сессия 8). Каждый шаг: код → «зачем» → команда → ожидаемый результат → «проверь себя». Разделы 11-14 — чек-лист, глоссарий, вопросы для собеседования, что дальше.
+<p class="small">Отдельный репозиторий, ни от чего не зависит. Ни одного фреймворка и ни одного бандлера — принципиально: цель лабы увидеть, что делают Vue/React/бандлеры <i>вместо вас</i>, а не выучить ещё один инструмент. Домен практики (сессия 8) — тикеты, тот же, что в Vue Lab — Helpdesk, специально для прямого сравнения «vanilla vs Vue» в конце; код при этом полностью свой, без единой связи с тем репозиторием.</p></div>
+
+<h2 id="sec-1"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-1"></label>1. Зачем это: баги, которые растут из непонимания фундамента <a class="anchor" href="#sec-1">#</a></h2>
+
+<p>Четыре строчки, четыре классических бага. Ни один не является «редким краевым случаем» — с каждым вы уже сталкивались, а если нет — столкнётесь на первом собеседовании.</p>
+<pre><code>// Баг 1: значение "0" истинно? А пустая строка?
+function describe(qty) {
+  if (qty) return `В наличии: ${qty}`;
+  return 'Нет в наличии';
+}
+describe(0);              // "Нет в наличии" — а если 0 это ВАЛИДНОЕ количество (закончился товар после продажи)?
+
+// Баг 2: замыкание в цикле
+for (var i = 0; i &lt; 3; i++) {
+  setTimeout(() =&gt; console.log(i), 0);
+}
+// Ожидание: 0 1 2       Реальность: 3 3 3
+
+// Баг 3: this внутри колбэка
+const cart = {
+  items: ['bolt', 'nut'],
+  printItems() {
+    this.items.forEach(function (item) {
+      console.log(this.prefix, item);   // TypeError или undefined — this здесь не cart!
+    });
+  },
+  prefix: '→',
+};
+cart.printItems();
+
+// Баг 4: сравнение объектов
+const a = { qty: 5 };
+const b = { qty: 5 };
+console.log(a === b);      // false — а почему падает тест "ожидал {qty:5}, получил {qty:5}"?</code></pre>
+
+<table>
+<tr><th>Баг</th><th>Что происходит на самом деле</th><th>Где разбираем</th></tr>
+<tr><td>1. Falsy-ловушка</td><td><code>0</code>, <code>''</code>, <code>NaN</code>, <code>null</code>, <code>undefined</code> — все ложны; <code>if (qty)</code> не отличает «нет данных» от «данные — ноль»</td><td>раздел 3</td></tr>
+<tr><td>2. var в цикле</td><td><code>var</code> не создаёт новую область видимости на каждой итерации — все три колбэка делят ОДНУ переменную <code>i</code>, которая к моменту вызова уже <code>3</code></td><td>раздел 2</td></tr>
+<tr><td>3. Потеря this</td><td>обычная функция в колбэке получает свой <code>this</code> (в строгом режиме — <code>undefined</code>), не тот, что у <code>cart</code></td><td>раздел 5</td></tr>
+<tr><td>4. Сравнение по ссылке</td><td>объекты и массивы сравниваются по идентичности, не по содержимому — <code>{}</code> никогда не равен другому <code>{}</code>, даже с теми же полями</td><td>раздел 4</td></tr>
+</table>
+<p>Общий знаменатель: в JavaScript почти всё — <b>договорённость, а не защита</b>. Язык не мешает вам сравнить объекты через <code>===</code> (просто это не то сравнение, которое вы хотели), не мешает объявить <code>var</code> в цикле (просто область видимости не та, что вы думали). Фреймворки типа Vue берут часть этих договорённостей на себя и прячут — эта лаба про то, что именно они прячут и почему.</p>
+<div class="insight-box"><span class="tag">ГЛАВНАЯ МЫСЛЬ ЛАБЫ</span><p>JavaScript — язык с очень небольшим числом настоящих правил и очень большим числом последствий из них. Все четыре бага выше выводятся из четырёх фактов: «typeof — не единственный способ проверить тип», «var функционально-, а let блочно-скопирован», «this определяется в момент вызова, не объявления», «объекты сравниваются по ссылке». Выучив эти факты один раз строго, вы перестаёте гадать и начинаете предсказывать поведение кода до его запуска — это и есть цель лабы.</p></div>
+<div class="next-box"><span class="tag">ПЕРЕД РАЗДЕЛОМ <a href="#sec-2">2</a></span><ul>
+<li>📖 Пробежаться: <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Guide" target="_blank">MDN: JavaScript Guide</a> — не читать целиком, просто держать открытым как справочник.</li>
+<li>✅ Node.js 22 и Docker; лаба ничего не требует, кроме терминала и браузера.</li>
+</ul></div>
+
+<h2 id="sec-2"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-2"></label>2. Переменные и область видимости <a class="anchor" href="#sec-2">#</a></h2>
+
+<h3>2.1 var vs let vs const</h3>
+<table>
+<tr><th></th><th><code>var</code></th><th><code>let</code></th><th><code>const</code></th></tr>
+<tr><td>Область видимости</td><td>функция (или глобальная)</td><td>блок <code>{ }</code></td><td>блок <code>{ }</code></td></tr>
+<tr><td>Повторное объявление</td><td>можно</td><td>нельзя (ошибка)</td><td>нельзя</td></tr>
+<tr><td>Переприсваивание</td><td>можно</td><td>можно</td><td>нельзя (сама переменная; содержимое объекта — можно)</td></tr>
+<tr><td>Hoisting</td><td>поднимается и инициализируется <code>undefined</code></td><td>поднимается, но не инициализируется (TDZ)</td><td>поднимается, но не инициализируется (TDZ)</td></tr>
+<tr><td>На <code>window</code>/глобальном объекте</td><td>да (в браузере)</td><td>нет</td><td>нет</td></tr>
+</table>
+
+<h3>2.2 Hoisting — «поднятие» объявлений</h3>
+<p>Перед выполнением JS-движок делает проход по коду и регистрирует все объявления функций и переменных в текущей области видимости — <i>до</i> того, как выполнится первая строка. Отсюда:</p>
+<pre><code>console.log(a);        // undefined, НЕ ReferenceError — var подняли и инициализировали
+var a = 5;
+
+console.log(sayHi());  // "Hi!" — работает: объявление функции целиком поднимается вместе с телом
+function sayHi() { return 'Hi!'; }
+
+console.log(b);        // ReferenceError: Cannot access 'b' before initialization
+let b = 10;</code></pre>
+
+<h3>2.3 Temporal Dead Zone (TDZ)</h3>
+<p>«Мёртвая зона» — промежуток между началом блока и строкой объявления <code>let</code>/<code>const</code>, где переменная уже зарегистрирована движком (поэтому не <code>undefined</code>, как у <code>var</code>), но обратиться к ней нельзя. TDZ — не баг, а страховка: она превращает «использование переменной раньше объявления» из тихой ошибки (<code>undefined</code>, которая всплывёт бог знает где) в громкую (<code>ReferenceError</code> сразу на месте).</p>
+
+<h3>2.4 Function scope vs block scope</h3>
+<pre><code>function demo() {
+  if (true) {
+    var fnScoped = 'я снаружи блока';
+    let blockScoped = 'я только внутри блока';
+  }
+  console.log(fnScoped);     // работает — var видна во всей функции
+  console.log(blockScoped);  // ReferenceError — let умер вместе с блоком if
+}</code></pre>
+
+<h3>2.5 Замыкание в цикле — механика бага из раздела 1</h3>
+<pre><code>// var: одна переменная на весь цикл — все замыкания видят её финальное значение
+for (var i = 0; i &lt; 3; i++) { setTimeout(() =&gt; console.log('var:', i), 0); }
+
+// let: НОВАЯ переменная i на КАЖДОЙ итерации — движок буквально создаёт новое связывание в блоке цикла
+for (let j = 0; j &lt; 3; j++) { setTimeout(() =&gt; console.log('let:', j), 0); }
+
+// var: 3 3 3      let: 0 1 2</code></pre>
+<details class="deep"><summary>🔬 Под капотом: почему у let своя переменная на каждой итерации, а не одна</summary><div class="deep-body">
+
+<p>Спецификация ECMAScript явно описывает <code>for (let ...)</code> как создание нового лексического окружения на каждой итерации, куда копируется текущее значение счётчика перед выполнением тела. Это не «магия» — это буквально то, что раньше писали руками через IIFE (immediately invoked function expression) до появления <code>let</code>: <code>for (var i = 0; i &lt; 3; i++) { (function (i) { setTimeout(() =&gt; console.log(i), 0); })(i); }</code>. <code>let</code> в цикле — синтаксический сахар именно над этим паттерном.</p>
+</div></details>
+<p>Область видимости — не абстрактная тема из учебника, а то, что определяет, «какую переменную вообще видит эта строка кода». В сессии 1 вы воспроизведёте баг из раздела 1 и почините его тремя разными способами.</p>
+<h2 id="sec-3"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-3"></label>3. Типы и приведение <a class="anchor" href="#sec-3">#</a></h2>
+
+<h3>3.1 Примитивы и typeof</h3>
+<table>
+<tr><th>Тип</th><th><code>typeof</code></th><th>Заметка</th></tr>
+<tr><td>Number</td><td><code>"number"</code></td><td>единственный числовой тип (кроме BigInt); <code>NaN</code> тоже <code>"number"</code></td></tr>
+<tr><td>String</td><td><code>"string"</code></td><td></td></tr>
+<tr><td>Boolean</td><td><code>"boolean"</code></td><td></td></tr>
+<tr><td>Undefined</td><td><code>"undefined"</code></td><td>«объявлено, но не присвоено» или «поля нет»</td></tr>
+<tr><td>Null</td><td><code>"object"</code></td><td>исторический баг языка, не будет исправлен — сохранён для совместимости</td></tr>
+<tr><td>Symbol</td><td><code>"symbol"</code></td><td>раздел 8</td></tr>
+<tr><td>BigInt</td><td><code>"bigint"</code></td><td>числа произвольной точности: <code>10n</code></td></tr>
+<tr><td>Object (включая Array, Function)</td><td><code>"object"</code> / <code>"function"</code></td><td><code>Array.isArray()</code> — единственный надёжный способ отличить массив от объекта</td></tr>
+</table>
+
+<h3>3.2 == vs === — что на самом деле делает нестрогое сравнение</h3>
+<p><code>==</code> не «сравнивает нестрого» — оно выполняет <b>приведение типов по конкретному алгоритму</b> (Abstract Equality Comparison) и только потом сравнивает. Выучить весь алгоритм не нужно — нужно запомнить пять результатов, которые ломают интуицию:</p>
+<pre><code>0 == ''          // true   — строка приводится к числу: Number('') === 0
+0 == '0'         // true   — Number('0') === 0
+0 == false       // true   — false приводится к 0
+'' == false      // true   — оба приводятся к 0
+null == undefined // true  — специальное правило: равны ДРУГ ДРУГУ и больше никому
+null == 0         // false — а вот это уже НЕ работает, хотя логика "оба ложны" подсказывает обратное
+NaN == NaN        // false — NaN не равен даже самому себе (единственное такое значение)
+[] == false       // true   — [] → '' → 0; false → 0
+[] == ![]         // true   — классика собеседований: ![] это false, дальше как в строке выше</code></pre>
+
+<p><b>Правило лабы: всегда <code>===</code></b>, кроме одного места — <code>x == null</code> как компактная проверка «null или undefined» (единственный оправданный случай нестрогого сравнения, потому что использует именно то специальное правило из таблицы).</p>
+
+<h3>3.3 Truthy / falsy</h3>
+<p>Ложны ровно восемь значений: <code>false</code>, <code>0</code>, <code>-0</code>, <code>0n</code>, <code>''</code>, <code>null</code>, <code>undefined</code>, <code>NaN</code>. <b>Все остальные значения истинны</b> — включая <code>'0'</code> (строка с нулём), <code>[]</code> (пустой массив), <code>{}</code> (пустой объект). Это и есть баг 1 из раздела 1: <code>if (qty)</code> ложно не только для «нет данных», но и для «данных 0» — оба падают в одну ветку.</p>
+
+<h3>3.4 NaN — Not a Number, но typeof "number"</h3>
+<pre><code>typeof NaN            // "number" — NaN это специальное числовое значение, а не отдельный тип
+NaN === NaN            // false
+Number.isNaN(NaN)      // true  — надёжная проверка
+isNaN('hello')         // true  — ГЛОБАЛЬНАЯ isNaN сначала приводит к числу: Number('hello') это NaN → true. Ловушка!
+Number.isNaN('hello')  // false — Number.isNaN НЕ приводит типы: строка это не NaN, это строка</code></pre>
+
+<h3>3.5 Явное приведение</h3>
+<pre><code>String(123)      // "123"        Number('123')   // 123        Boolean(0)  // false
+String(null)     // "null"       Number('')      // 0           Boolean('')  // false
+String(undefined)// "undefined"  Number('abc')   // NaN         Boolean('0')  // true — строка "0" непуста!
+String([1,2])    // "1,2"        Number(null)    // 0           Boolean([])   // true
+String({})       // "[object Object]"  Number(undefined) // NaN Boolean({})   // true
++'42'            // 42  — унарный плюс — короткий Number()</code></pre>
+<details class="deep"><summary>🔬 Под капотом: object → primitive: как объект превращается в строку или число</summary><div class="deep-body">
+
+<p>Когда объект участвует в операции, требующей примитив (<code>String(obj)</code>, <code>obj + ''</code>, <code>obj == 'что-то'</code>), движок вызывает внутренний алгоритм <code>ToPrimitive</code>: сначала пробует <code>Symbol.toPrimitive</code> (если определён), потом <code>valueOf()</code>, потом <code>toString()</code>. Для массива <code>toString()</code> — это <code>join(',')</code>, отсюда <code>String([1,2]) === '1,2'</code>. Для обычного объекта <code>toString()</code> даёт <code>'[object Object]'</code>. Определить своё поведение: <code>const item = { valueOf() { return this.price; } }; item + 10</code> сработает как число.</p>
+</div></details>
+
+<h2 id="sec-4"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-4"></label>4. Объекты и массивы: деструктуризация, spread/rest, методы <a class="anchor" href="#sec-4">#</a></h2>
+
+<h3>4.1 Деструктуризация</h3>
+<pre><code>const ticket = { id: 1, title: 'VPN не работает', status: 'open', priority: 'high' };
+const { id, title, priority: p = 'medium' } = ticket;       // переименование (priority → p) + дефолт
+const { status, ...rest } = ticket;                          // rest: всё, кроме status
+console.log(id, title, p, status, rest);
+
+const coords = [10, 20, 30];
+const [x, y, , z] = coords;                                  // пропуск элемента запятой — z получит undefined (массив короче)
+const [first, ...others] = coords;                            // rest в массиве
+
+function printTicket({ title, status = 'open' }) {           // деструктуризация прямо в параметре
+  console.log(`${title} [${status}]`);
+}
+printTicket(ticket);</code></pre>
+
+<h3>4.2 Spread vs Rest — один синтаксис, два направления</h3>
+<pre><code>// Spread: РАЗворачивает — используется там, где ожидается несколько элементов
+const a = [1, 2], b = [3, 4];
+const merged = [...a, ...b];                    // [1, 2, 3, 4]
+const clone = { ...ticket, status: 'closed' };  // новый объект: копия + перезаписанное поле (поверхностная копия!)
+Math.max(...[5, 1, 9]);                          // spread превращает массив в отдельные аргументы
+
+// Rest: СОБИРАЕТ — используется в объявлении параметров/деструктуризации
+function sum(...nums) { return nums.reduce((a, b) =&gt; a + b, 0); }   // все аргументы → массив
+const { id: ticketId, ...fields } = ticket;      // все поля, кроме id, → в fields</code></pre>
+<details class="deep"><summary>🔬 Под капотом: поверхностное копирование: где spread не спасает</summary><div class="deep-body">
+
+<pre><code>const original = { status: 'open', meta: { assignee: 'anna' } };
+const copy = { ...original, status: 'closed' };
+copy.meta.assignee = 'boris';
+console.log(original.meta.assignee);   // "boris" — ОБА объекта делят одну и ту же вложенную ссылку!</code></pre>
+<p><code>{ ...obj }</code> копирует только первый уровень: вложенные объекты/массивы остаются общими ссылками. Для глубокой копии — <code>structuredClone(obj)</code> (раздел 7) или ручная рекурсия; <code>JSON.parse(JSON.stringify(obj))</code> работает, но теряет <code>Date</code>, <code>undefined</code>, функции, циклические ссылки.</p>
+</div></details>
+
+<h3>4.3 Методы массивов — какой когда</h3>
+<table>
+<tr><th>Метод</th><th>Возвращает</th><th>Мутирует исходный?</th><th>Когда</th></tr>
+<tr><td><code>map</code></td><td>новый массив той же длины</td><td>нет</td><td>преобразовать каждый элемент</td></tr>
+<tr><td><code>filter</code></td><td>новый массив (короче или равен)</td><td>нет</td><td>оставить подходящие</td></tr>
+<tr><td><code>reduce</code></td><td>любое значение (не обязательно массив)</td><td>нет</td><td>свернуть в одно значение — сумма, группировка, что угодно</td></tr>
+<tr><td><code>find</code> / <code>findIndex</code></td><td>элемент / индекс или -1/undefined</td><td>нет</td><td>первый подходящий</td></tr>
+<tr><td><code>some</code> / <code>every</code></td><td>boolean</td><td>нет</td><td>«есть хотя бы один» / «все подходят»</td></tr>
+<tr><td><code>forEach</code></td><td><code>undefined</code></td><td>нет (но callback может мутировать элементы)</td><td>побочный эффект, не преобразование — если возвращаете значение, вы либо забыли map, либо не туда смотрите</td></tr>
+<tr><td><code>sort</code></td><td>тот же массив</td><td><b>да!</b></td><td>сортировка ПО МЕСТУ — без компаратора сортирует как строки: <code>[10, 2, 1].sort()</code> → <code>[1, 10, 2]</code></td></tr>
+<tr><td><code>push/pop/shift/unshift/splice</code></td><td>разное</td><td><b>да</b></td><td>изменяют исходный массив — источник багов при работе с состоянием (Vue/React ждут новую ссылку)</td></tr>
+<tr><td><code>slice</code></td><td>новый массив</td><td>нет</td><td>копия диапазона — «немутирующий splice»</td></tr>
+</table>
+<pre><code>const tickets = [
+  { id: 1, status: 'open', priority: 'high' },
+  { id: 2, status: 'closed', priority: 'low' },
+  { id: 3, status: 'open', priority: 'medium' },
+];
+
+const openTitles = tickets.filter(t =&gt; t.status === 'open').map(t =&gt; t.id);        // [1, 3]
+const hasUrgent = tickets.some(t =&gt; t.priority === 'high');                         // true
+const allOpen = tickets.every(t =&gt; t.status === 'open');                            // false
+const byStatus = tickets.reduce((acc, t) =&gt; {                                        // группировка через reduce
+  (acc[t.status] ??= []).push(t);
+  return acc;
+}, {});
+// { open: [{...}, {...}], closed: [{...}] }</code></pre>
+<details class="deep"><summary>🔬 Под капотом: reduce как швейцарский нож: почему им можно выразить map и filter</summary><div class="deep-body">
+
+<p><code>reduce</code> — самый общий метод: <code>arr.map(fn)</code> эквивалентен <code>arr.reduce((acc, x) =&gt; [...acc, fn(x)], [])</code>, а <code>filter</code> — <code>arr.reduce((acc, x) =&gt; cond(x) ? [...acc, x] : acc, [])</code>. Обратное неверно — через <code>map</code>/<code>filter</code> нельзя построить произвольную группировку в объект. Практическое правило: если результат — массив той же формы, что вход, берите <code>map</code>/<code>filter</code> (они читаются понятнее и не мутируют случайно); если результат — объект, число, или структура другой формы — <code>reduce</code>.</p>
+</div></details>
+
+<h2 id="sec-5"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-5"></label>5. this, call/apply/bind, стрелочные функции <a class="anchor" href="#sec-5">#</a></h2>
+
+<p><b>Главное правило: <code>this</code> определяется тем, <i>как функцию вызвали</i>, а не тем, <i>где она объявлена</i></b> — за одним исключением (стрелочные функции). Четыре способа вызова — четыре разных <code>this</code>:</p>
+<pre><code>function show() { console.log(this); }
+
+show();                          // вызов "просто так" → this === undefined (в strict mode / модулях) или globalThis
+const obj = { show };
+obj.show();                      // вызов КАК МЕТОД → this === obj
+show.call({ x: 1 });             // явно задан → this === { x: 1 }
+new show();                       // вызов КАК КОНСТРУКТОР → this === новый пустой объект</code></pre>
+
+<table>
+<tr><th>Способ вызова</th><th><code>this</code> внутри</th></tr>
+<tr><td><code>fn()</code></td><td><code>undefined</code> (strict/модули) или глобальный объект</td></tr>
+<tr><td><code>obj.method()</code></td><td><code>obj</code> — тот объект, через который вызвали, а не тот, где метод объявлен</td></tr>
+<tr><td><code>fn.call(ctx, ...args)</code></td><td><code>ctx</code>, аргументы по одному</td></tr>
+<tr><td><code>fn.apply(ctx, [args])</code></td><td><code>ctx</code>, аргументы массивом</td></tr>
+<tr><td><code>fn.bind(ctx)</code></td><td>возвращает НОВУЮ функцию с навсегда зафиксированным <code>this</code></td></tr>
+<tr><td><code>new Fn()</code></td><td>новый объект, который станет результатом (если конструктор не вернул другой объект явно)</td></tr>
+<tr><td>стрелочная функция</td><td>берёт <code>this</code> из окружающего (лексического) контекста в момент ОБЪЯВЛЕНИЯ, не может быть переопределён</td></tr>
+</table>
+<pre><code>// Баг 3 из раздела 1 — теперь чинится:
+const cart = {
+  items: ['bolt', 'nut'],
+  prefix: '→',
+  printItems() {
+    this.items.forEach((item) =&gt; {              // СТРЕЛОЧНАЯ функция: берёт this у printItems, а не у forEach
+      console.log(this.prefix, item);            // this === cart — работает
+    });
+  },
+};
+cart.printItems();          // → bolt  → nut
+
+// то же самое без стрелочных — три способа починить:
+printItems_v2() {
+  const self = this;                                          // 1. сохранить this в переменную (старая школа)
+  this.items.forEach(function (item) { console.log(self.prefix, item); });
+},
+printItems_v3() {
+  this.items.forEach(function (item) { console.log(this.prefix, item); }.bind(this));   // 2. bind
+},
+printItems_v4() {
+  this.items.forEach(function (item) { console.log(this.prefix, item); }, this);         // 3. forEach принимает thisArg вторым аргументом!
+},</code></pre>
+<details class="deep"><summary>🔬 Под капотом: bind навсегда: почему повторный bind ничего не меняет</summary><div class="deep-body">
+
+<pre><code>function show() { console.log(this.x); }
+const bound1 = show.bind({ x: 1 });
+const bound2 = bound1.bind({ x: 2 });     // попытка перебиндить
+bound2();   // выведет 1, не 2!</code></pre>
+<p><code>bind</code> оборачивает функцию в новую функцию, которая ВСЕГДА вызывает оригинал с зафиксированным <code>this</code> — повторный <code>bind</code> оборачивает уже обёрнутую функцию, но внутренний вызов оригинала всё равно использует первый зафиксированный контекст. Практический вывод: <code>bind</code> — операция «один раз и навсегда», обычно применяется в конструкторе класса: <code>this.handleClick = this.handleClick.bind(this)</code> — привычный паттерн до появления полей класса со стрелочными методами.</p>
+</div></details>
+
+<h2 id="sec-6"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-6"></label>6. Замыкания и практические паттерны <a class="anchor" href="#sec-6">#</a></h2>
+
+<p><b>Замыкание</b> — функция, которая «помнит» переменные из области, где была создана, даже после того как эта область формально завершила выполнение. Это не экзотика — это то, как работает любой колбэк, любой обработчик события, любой модуль.</p>
+<pre><code>function makeCounter() {
+  let count = 0;                       // приватная переменная — недоступна снаружи никак, кроме как через возвращённые функции
+  return {
+    increment: () =&gt; ++count,
+    reset: () =&gt; { count = 0; },
+    get value() { return count; },
+  };
+}
+const counter = makeCounter();
+counter.increment(); counter.increment();
+console.log(counter.value);            // 2
+console.log(counter.count);            // undefined — снаружи переменной count не существует вообще</code></pre>
+
+<h3>6.1 Приватность до #private: module pattern</h3>
+<p>До появления приватных полей класса (раздел 7) замыкание было ЕДИНСТВЕННЫМ способом сделать что-то по-настоящему недоступным снаружи — не «соглашением об именовании» (<code>_private</code>), а физической невозможностью достучаться.</p>
+
+<h3>6.2 Каррирование</h3>
+<pre><code>// Обычная функция трёх аргументов
+function discount(percent, tax, price) { return price * (1 - percent) * (1 + tax); }
+
+// Каррированная версия — можно "заполнять" аргументы по одному, получая функцию каждый раз
+const curriedDiscount = (percent) =&gt; (tax) =&gt; (price) =&gt; price * (1 - percent) * (1 + tax);
+
+const withStandardDiscount = curriedDiscount(0.1);      // "зафиксировали" процент скидки — получили функцию от (tax)
+const withStandardTax = withStandardDiscount(0.2);       // зафиксировали налог — получили функцию от (price)
+withStandardTax(100);                                     // 90 — можно переиспользовать withStandardDiscount для разных price</code></pre>
+
+<h3>6.3 Мемоизация</h3>
+<pre><code>function memoize(fn) {
+  const cache = new Map();                     // замыкание хранит кэш между вызовами возвращённой функции
+  return (...args) =&gt; {
+    const key = JSON.stringify(args);
+    if (cache.has(key)) { console.log('из кэша'); return cache.get(key); }
+    const result = fn(...args);
+    cache.set(key, result);
+    return result;
+  };
+}
+
+function slowSquare(n) { for (let i = 0; i &lt; 1e8; i++); return n * n; }   // искусственно медленная
+const fastSquare = memoize(slowSquare);
+fastSquare(5);      // считает медленно
+fastSquare(5);      // "из кэша" — мгновенно</code></pre>
+<details class="deep"><summary>🔬 Под капотом: утечки памяти через замыкания: когда "помнить" — плохо</summary><div class="deep-body">
+
+<p>Замыкание держит ссылку на всю область видимости, где было создано, — не только на переменные, которые реально использует. Если в большой функции объявлен огромный массив, а возвращённое замыкание использует лишь одну маленькую переменную из той же области, движок (в некоторых реализациях) всё равно не может освободить память под массив, пока живо замыкание. Практический вывод: DOM-обработчики событий, которые держат замыкание на объект с большими данными и никогда не снимаются (<code>removeEventListener</code>) — частый источник утечек в SPA; это будет видно в разделе про DOM.</p>
+</div></details>
+
+<h2 id="sec-7"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-7"></label>7. Прототипы и class <a class="anchor" href="#sec-7">#</a></h2>
+
+<p>В JavaScript нет «классов» на уровне движка — есть <b>прототипное наследование</b>: каждый объект может ссылаться на другой объект (свой прототип) и искать в нём поля, которых нет у него самого. <code>class</code> — синтаксис поверх этого механизма, появившийся в ES6 для читаемости.</p>
+
+<h3>7.1 Цепочка прототипов вручную</h3>
+<pre><code>const animalProto = {
+  speak() { return `${this.name} издаёт звук`; },
+};
+const dog = Object.create(animalProto);      // dog.__proto__ === animalProto, БЕЗ class вообще
+dog.name = 'Рекс';
+dog.speak();                                  // "Рекс издаёт звук" — метод найден не у dog, а у его прототипа
+
+console.log(dog.hasOwnProperty('speak'));    // false — speak НЕ собственное свойство dog
+console.log('speak' in dog);                  // true — но доступно через цепочку прототипов
+console.log(Object.getPrototypeOf(dog) === animalProto);   // true</code></pre>
+
+<h3>7.2 class — тот же механизм, другой синтаксис</h3>
+<pre><code>class Animal {
+  constructor(name) { this.name = name; }        // будет вызван при new Animal(...)
+  speak() { return `${this.name} издаёт звук`; }  // попадёт в Animal.prototype, НЕ в каждый экземпляр
+}
+class Dog extends Animal {
+  speak() { return `${super.speak()} (гав!)`; }   // super обращается к методу родителя ЯВНО
+}
+const rex = new Dog('Рекс');
+rex.speak();                                        // "Рекс издаёт звук (гав!)"
+
+// Доказательство, что class — сахар:
+console.log(typeof Animal);                          // "function" — класс это функция!
+console.log(rex.speak === Dog.prototype.speak);       // true — метод лежит в prototype, как и в примере с Object.create
+console.log(Object.getPrototypeOf(Dog.prototype) === Animal.prototype);   // true — цепочка прототипов та же самая</code></pre>
+
+<h3>7.3 Приватные поля, статика, геттеры/сеттеры</h3>
+<pre><code>class BankAccount {
+  #balance = 0;                                   // #field — приватное поле, недоступно ДАЖЕ через obj.#balance снаружи класса
+  static #accountsOpened = 0;                      // статическое приватное поле — общее для всех экземпляров
+
+  constructor(owner) {
+    this.owner = owner;
+    BankAccount.#accountsOpened++;
+  }
+
+  deposit(amount) {
+    if (amount &lt;= 0) throw new RangeError('сумма должна быть положительной');
+    this.#balance += amount;
+    return this;                                   // return this — включает цепочку вызовов (chaining)
+  }
+
+  get balance() { return this.#balance; }           // геттер — читается КАК свойство: account.balance, без скобок
+  set balance(value) { throw new Error('баланс нельзя присвоить напрямую, используйте deposit/withdraw'); }
+
+  static get accountsOpened() { return BankAccount.#accountsOpened; }   // статический геттер
+}
+
+const acc = new BankAccount('Анна');
+acc.deposit(100).deposit(50);                        // chaining благодаря return this
+console.log(acc.balance);                             // 150
+console.log(acc.#balance);                            // SyntaxError НА ЭТАПЕ ПАРСИНГА — не рантайм-ошибка, а именно синтаксис
+acc.balance = 999;                                     // Error: баланс нельзя присвоить напрямую
+console.log(BankAccount.accountsOpened);               // 1</code></pre>
+<details class="deep"><summary>🔬 Под капотом: #private vs _convention: в чём разница на уровне движка</summary><div class="deep-body">
+
+<p><code>this._balance</code> (подчёркивание) — договорённость между разработчиками, ничем не защищённая: <code>acc._balance = 999</code> сработает молча. <code>#balance</code> — часть синтаксиса языка: движок в буквальном смысле не даёт скомпилировать код, который обращается к <code>#balance</code> вне тела класса — это <code>SyntaxError</code>, а не <code>undefined</code> и не исключение в рантайме. Это ровно тот уровень инкапсуляции, которого не хватало в JS до ES2022 и который был нужен для честной реализации Encapsulation из ООП-принципов.</p>
+</div></details>
+
+<h2 id="sec-8"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-8"></label>8. Symbol и коллекции: Map, Set, WeakMap, WeakSet <a class="anchor" href="#sec-8">#</a></h2>
+
+<h3>8.1 Symbol — гарантированно уникальный идентификатор</h3>
+<pre><code>const id1 = Symbol('id');
+const id2 = Symbol('id');
+console.log(id1 === id2);          // false — даже с одинаковым описанием, каждый Symbol уникален
+
+const ticket = {
+  title: 'Задача',
+  [id1]: 42,                        // Symbol как ключ объекта — не столкнётся с обычными строковыми ключами
+};
+console.log(Object.keys(ticket));   // ['title'] — Symbol-ключи НЕ перечисляются обычными методами
+console.log(ticket[id1]);            // 42 — но доступны напрямую, если у вас есть сам Symbol</code></pre>
+<p>Практическое применение — <code>Symbol.iterator</code>: то, что делает объект «перебираемым» через <code>for...of</code>. Реализовав его, любой объект становится совместим со spread, деструктуризацией массивов, <code>for...of</code> — именно так работают встроенные Map/Set/Array.</p>
+<h3>8.2 Map vs обычный объект</h3>
+<table>
+<tr><th></th><th>Object</th><th>Map</th></tr>
+<tr><td>Ключи</td><td>только строки и Symbol (числа приводятся к строкам)</td><td>ЛЮБОЙ тип: объект, функция, NaN</td></tr>
+<tr><td>Порядок ключей</td><td>не гарантирован для числовых-подобных строк</td><td>гарантирован порядок вставки</td></tr>
+<tr><td>Размер</td><td><code>Object.keys(obj).length</code></td><td><code>map.size</code> напрямую</td></tr>
+<tr><td>Итерация</td><td><code>for...in</code> (обходит и унаследованные!) или <code>Object.entries</code></td><td><code>for...of map</code> из коробки</td></tr>
+<tr><td>Проверка "случайных" полей прототипа</td><td>риск (<code>toString</code>, <code>constructor</code>...)</td><td>нет риска — чистая структура данных</td></tr>
+</table>
+<pre><code>const cache = new Map();
+const ticketObj = { id: 1 };
+cache.set(ticketObj, 'значение привязано к ССЫЛКЕ на объект, не к его содержимому');
+cache.set('plain-key', 123);
+console.log(cache.get(ticketObj));    // достаётся именно по этой ссылке
+console.log(cache.size);               // 2
+for (const [key, value] of cache) { /* ... */ }   // Map итерируем из коробки
+
+const uniqueIds = new Set([1, 2, 2, 3, 3, 3]);
+console.log([...uniqueIds]);            // [1, 2, 3] — самый быстрый способ убрать дубли из массива</code></pre>
+
+<h3>8.3 WeakMap / WeakSet — не мешают сборщику мусора</h3>
+<p>Обычный <code>Map</code> держит «сильную» ссылку на ключ-объект: пока запись в Map существует, объект-ключ не может быть удалён сборщиком мусора, даже если больше нигде не используется — потенциальная утечка памяти (см. «под капотом» раздела 6). <code>WeakMap</code> держит «слабую» ссылку: если объект-ключ больше нигде не используется, сборщик мусора имеет право удалить и его, и запись в WeakMap — автоматически, без вашего участия. Плата: <code>WeakMap</code> не перечисляем (нет <code>.size</code>, нет <code>for...of</code>) — вы не можете «просто посмотреть, что там есть», только обратиться по конкретному ключу. Типичное применение — приватные данные, привязанные к DOM-элементу, которые должны исчезнуть вместе с ним.</p>
+
+<h2 id="sec-9"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-9"></label>9. Event Loop: call stack, microtask, macrotask <a class="anchor" href="#sec-9">#</a></h2>
+
+<p>JavaScript однопоточный: одновременно выполняется только один кусок кода. Асинхронность — не про параллелизм, а про <b>порядок, в котором отложенный код встаёт в очередь на выполнение</b>. Это самая частая тема на собеседованиях именно потому, что интуиция здесь обманывает почти всегда.</p>
+<pre>┌─────────────────────────────────────────────────────────────────┐
+│  Call Stack (стек вызовов)                                       │  ← выполняется ПРЯМО СЕЙЧАС, синхронно
+│  функция вызывает функцию — растёт вниз, возвращается — падает   │
+└─────────────────────────────────────────────────────────────────┘
+              │  стек опустел → движок проверяет очереди
+              ▼
+┌──────────────────────────────┐   ┌──────────────────────────────┐
+│  Microtask Queue               │   │  Macrotask Queue (Task Queue) │
+│  Promise.then/catch/finally,   │   │  setTimeout, setInterval,      │
+│  queueMicrotask, MutationObs.  │   │  I/O, событие DOM (click...)   │
+│  ВЫСОКИЙ приоритет:             │   │  НИЗКИЙ приоритет:              │
+│  очередь опустошается          │   │  ОДНА задача за раз, потом      │
+│  ЦЕЛИКОМ перед каждым          │   │  снова проверяется вся          │
+│  macrotask                     │   │  microtask queue                │
+└──────────────────────────────┘   └──────────────────────────────┘</pre>
+<pre><code>console.log('1: синхронный код');
+
+setTimeout(() =&gt; console.log('2: macrotask (setTimeout)'), 0);
+
+Promise.resolve().then(() =&gt; console.log('3: microtask (promise)'));
+
+console.log('4: синхронный код');
+
+// Порядок вывода: 1, 4, 3, 2
+// НЕ 1, 2, 3, 4 (как думает интуиция про "0 миллисекунд")
+// НЕ 1, 4, 2, 3 (microtask ВСЕГДА раньше macrotask, даже при setTimeout(fn, 0))</code></pre>
+
+<p>Разбор по шагам: (1) синхронный код выполняется весь целиком, пока стек не опустеет — <code>console.log('1')</code> и <code>console.log('4')</code> выполнятся прежде, чем движок вообще посмотрит на очереди. (2) <code>setTimeout(fn, 0)</code> не означает «выполнить через 0 миллисекунд» — это означает «положить в macrotask-очередь как можно скорее», но она обрабатывается только после того, как <b>полностью опустеет</b> microtask-очередь. (3) Поэтому <code>Promise.then</code> (microtask) всегда обгоняет даже нулевой <code>setTimeout</code> (macrotask).</p>
+<pre><code>// Более сложный пример — часто встречается на собеседованиях именно в такой форме
+console.log('A');
+setTimeout(() =&gt; console.log('B'), 0);
+Promise.resolve().then(() =&gt; {
+  console.log('C');
+  Promise.resolve().then(() =&gt; console.log('D'));   // microtask, поставленный ВНУТРИ microtask
+});
+Promise.resolve().then(() =&gt; console.log('E'));
+console.log('F');
+// Ответ: A, F, C, E, D, B
+// Почему D раньше B: очередь microtask опустошается ПОЛНОСТЬЮ, включая то, что добавляется по ходу её же обработки,
+// и только потом движок переходит к следующему macrotask</code></pre>
+<details class="deep"><summary>🔬 Под капотом: setTimeout(fn, 0) в браузере: ещё не сразу</summary><div class="deep-body">
+
+<p>В браузерах (спецификация HTML, не ECMAScript) минимальная задержка <code>setTimeout</code> на верхнем уровне вложенности — не 0, а как минимум ~4мс (защита от блокировки основного потока частыми таймерами), плюс для фоновых вкладок задержка может быть увеличена браузером ради экономии батареи. В Node.js похожий, но не идентичный набор фаз event loop (там ещё есть <code>process.nextTick</code>, который приоритетнее даже обычных Promise-microtask, и отдельные фазы для I/O). Для практики в этой лабе достаточно двухуровневой модели «microtask всегда раньше macrotask» — она верна и в браузере, и в Node.</p>
+</div></details>
+
+<h2 id="sec-10"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-10"></label>10. От callback к Promise и async/await <a class="anchor" href="#sec-10">#</a></h2>
+
+<h3>10.1 Callback hell — проблема, которую решили Promises</h3>
+<pre><code>// "Пирамида судьбы" — вложенные колбэки
+getTicket(1, (ticket) =&gt; {
+  getAssignee(ticket.assigneeId, (user) =&gt; {
+    getWorkspace(user.workspaceId, (workspace) =&gt; {
+      console.log(workspace.name);        // код растёт вправо, обработка ошибок дублируется в каждом уровне
+    }, handleError);
+  }, handleError);
+}, handleError);</code></pre>
+
+<h3>10.2 Promise — объект-обещание будущего значения</h3>
+<p>Три состояния: <b>pending</b> (ожидание) → <b>fulfilled</b> (успех, есть значение) или <b>rejected</b> (провал, есть причина). Переход необратим: однажды выполненный или отклонённый Promise не может сменить состояние.</p>
+<pre><code>function getTicketAsync(id) {
+  return new Promise((resolve, reject) =&gt; {
+    setTimeout(() =&gt; {
+      if (id &gt; 0) resolve({ id, title: 'Задача' });
+      else reject(new Error('некорректный id'));
+    }, 100);
+  });
+}
+
+getTicketAsync(1)
+  .then(ticket =&gt; getAssigneeAsync(ticket.assigneeId))   // .then возвращает НОВЫЙ Promise — можно продолжать цепочку
+  .then(user =&gt; getWorkspaceAsync(user.workspaceId))
+  .then(workspace =&gt; console.log(workspace.name))
+  .catch(error =&gt; console.error('где-то в цепочке:', error.message))    // ОДИН catch на всю цепочку
+  .finally(() =&gt; console.log('выполнено в любом случае'));</code></pre>
+
+<h3>10.3 async/await — синтаксический сахар над Promise</h3>
+<pre><code>async function loadWorkspaceName(ticketId) {                 // async function ВСЕГДА возвращает Promise
+  try {
+    const ticket = await getTicketAsync(ticketId);            // await "разворачивает" Promise, приостанавливая функцию (не поток!)
+    const user = await getAssigneeAsync(ticket.assigneeId);
+    const workspace = await getWorkspaceAsync(user.workspaceId);
+    return workspace.name;
+  } catch (error) {                                            // try/catch ловит и синхронные ошибки, и отклонённые Promise
+    console.error('где-то в цепочке:', error.message);
+    throw error;                                                 // важно: проброс, иначе вызывающий код не узнает об ошибке
+  }
+}
+loadWorkspaceName(1).then(name =&gt; console.log(name));           // async-функцию вызывают как обычный Promise</code></pre>
+<details class="deep"><summary>🔬 Под капотом: await не блокирует поток — что именно "приостанавливается"</summary><div class="deep-body">
+
+<p><code>await</code> не останавливает браузер/Node — он останавливает выполнение ТОЛЬКО текущей async-функции, возвращая управление в event loop; остальной код (другие обработчики событий, таймеры) продолжает выполняться нормально. Технически каждый <code>await</code> — это точка, где функция «разбивается» на продолжение (continuation), которое ставится в microtask-очередь, когда Promise разрешится. Именно поэтому async/await совместим с однопоточной моделью из раздела 9 — под капотом это всё те же microtasks.</p>
+</div></details>
+
+<h3>10.4 Promise.all / race / allSettled / any</h3>
+<table>
+<tr><th>Метод</th><th>Разрешается когда</th><th>Отклоняется когда</th><th>Когда использовать</th></tr>
+<tr><td><code>Promise.all</code></td><td>ВСЕ выполнились успешно — массив результатов по порядку</td><td>ЛЮБОЙ отклонён — сразу, не дожидаясь остальных</td><td>нужны все результаты, любой сбой = общий сбой</td></tr>
+<tr><td><code>Promise.allSettled</code></td><td>все завершились (неважно, успех или нет)</td><td>никогда не отклоняется</td><td>нужен статус каждого независимо от остальных</td></tr>
+<tr><td><code>Promise.race</code></td><td>ПЕРВЫЙ завершившийся (успех или провал)</td><td>если первым завершился отклонённый</td><td>таймаут: race с промисом-таймером</td></tr>
+<tr><td><code>Promise.any</code></td><td>ПЕРВЫЙ успешный</td><td>только если ВСЕ отклонены</td><td>несколько источников данных, нужен любой рабочий</td></tr>
+</table>
+<pre><code>const results = await Promise.allSettled([getTicketAsync(1), getTicketAsync(-1), getTicketAsync(2)]);
+results.forEach(r =&gt; r.status === 'fulfilled' ? console.log('ok:', r.value) : console.log('ошибка:', r.reason.message));
+// allSettled НЕ бросает исключение целиком — можно обработать частичные сбои по отдельности, в отличие от Promise.all</code></pre>
+
+<h2 id="sec-11"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-11"></label>11. fetch, ошибки, AbortController, debounce/throttle <a class="anchor" href="#sec-11">#</a></h2>
+
+<h3>11.1 fetch — базовый контракт и ловушка с обработкой ошибок</h3>
+<pre><code>async function loadTickets() {
+  const response = await fetch('/api/tickets');
+  if (!response.ok) {                          // fetch НЕ бросает исключение на 404/500 — только на СЕТЕВОЙ сбой!
+    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+  }
+  return response.json();                       // тоже возвращает Promise
+}
+
+try {
+  const tickets = await loadTickets();
+} catch (error) {
+  console.error('Не удалось загрузить:', error.message);   // сюда попадут: сетевые сбои И наши ручные throw на !response.ok
+}</code></pre>
+<p><b>Ловушка:</b> <code>fetch('/несуществующий-урл')</code> вернёт успешно разрешённый Promise с <code>response.status === 404</code> — это НЕ ошибка с точки зрения <code>fetch</code>. Проверка <code>response.ok</code> (сокращение для «статус 200-299») — обязательная ручная строка, без которой 404-я страница молча спарсится как JSON и упадёт с непонятной ошибкой на <code>response.json()</code>.</p>
+<h3>11.2 AbortController — отмена запроса</h3>
+<pre><code>function loadWithTimeout(url, ms = 3000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() =&gt; controller.abort(), ms);      // если за ms не успели — отменяем сами
+
+  return fetch(url, { signal: controller.signal })               // signal связывает fetch с контроллером
+    .finally(() =&gt; clearTimeout(timer));                          // не забыть снять таймер при успехе
+}
+
+// отмена при повторном поиске (частый паттерн: пользователь печатает быстрее, чем отвечает сервер)
+let currentController = null;
+async function search(query) {
+  currentController?.abort();                    // отменяем ПРЕДЫДУЩИЙ незавершённый запрос
+  currentController = new AbortController();
+  try {
+    const res = await fetch(`/api/search?q=${query}`, { signal: currentController.signal });
+    return res.json();
+  } catch (error) {
+    if (error.name === 'AbortError') return null;    // отмена — это тоже "ошибка" с точки зрения fetch, но ожидаемая
+    throw error;
+  }
+}</code></pre>
+
+<h3>11.3 Таймеры, debounce и throttle своими руками</h3>
+<p>Оба паттерна ограничивают частоту вызова функции, но по-разному:</p>
+<table>
+<tr><th></th><th>Debounce</th><th>Throttle</th></tr>
+<tr><td>Идея</td><td>«подожди тишины» — выполнить только после паузы</td><td>«не чаще, чем раз в N мс» — регулярный ритм</td></tr>
+<tr><td>Пример</td><td>поиск по вводу текста — ждём, пока пользователь перестанет печатать</td><td>обработчик скролла/resize — не считать координаты 60 раз в секунду</td></tr>
+<tr><td>Сколько вызовов при непрерывном потоке событий</td><td>один — в самом конце</td><td>регулярно, через равные интервалы</td></tr>
+</table>
+<pre><code>function debounce(fn, delay) {
+  let timer = null;
+  return (...args) =&gt; {
+    clearTimeout(timer);                          // каждый новый вызов ОТМЕНЯЕТ предыдущий отложенный
+    timer = setTimeout(() =&gt; fn(...args), delay);
+  };
+}
+
+function throttle(fn, interval) {
+  let lastCall = 0;
+  return (...args) =&gt; {
+    const now = Date.now();
+    if (now - lastCall &gt;= interval) {              // пропускаем вызов, только если прошло достаточно времени
+      lastCall = now;
+      fn(...args);
+    }
+  };
+}</code></pre>
+<p>Оба реализуются в сессии 5 с тестами через <code>node --test</code> и поддельные таймеры — здесь только принцип. Обратите внимание: обе функции — сами по себе пример замыкания из раздела 6 (<code>timer</code> и <code>lastCall</code> живут между вызовами возвращённой функции).</p>
+<h2 id="sec-12"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-12"></label>12. DOM без фреймворка <a class="anchor" href="#sec-12">#</a></h2>
+
+<h3>12.1 Обход дерева и создание узлов</h3>
+<pre><code>const list = document.querySelector('#ticket-list');           // querySelector — CSS-селектор, любой
+const items = document.querySelectorAll('.ticket-item');        // NodeList, не Array — но у него есть forEach
+
+// создание узлов: НЕ через innerHTML += (пересоздаёт всё поддерево, теряет обработчики и состояние инпутов!)
+const li = document.createElement('li');
+li.className = 'ticket-item';
+li.textContent = 'Новая задача';                                 // textContent — безопасно; innerHTML — риск XSS на пользовательских данных
+list.appendChild(li);
+list.append(li2, li3);                                            // append принимает несколько узлов И строки сразу
+list.insertBefore(li, list.firstChild);                            // вставить в начало
+li.remove();                                                        // современный способ удалить узел (не parent.removeChild(li))
+
+// обход
+list.children;                            // HTMLCollection дочерних ЭЛЕМЕНТОВ (без текстовых узлов)
+list.childNodes;                          // NodeList ВСЕХ узлов, включая текстовые (пробелы между тегами!)
+li.closest('.ticket-list');               // ближайший предок, подходящий под селектор (или сам элемент)
+li.parentElement;  li.nextElementSibling;  li.previousElementSibling;</code></pre>
+
+<h3>12.2 Делегирование событий</h3>
+<p>Вместо навешивания обработчика на каждый элемент списка (который к тому же может исчезнуть/пересоздаться) — один обработчик на родителе, использующий всплытие событий (event bubbling).</p>
+<pre><code>// ПЛОХО: обработчик на каждом элементе — при добавлении новых задач нужно не забыть навесить и на них тоже
+document.querySelectorAll('.ticket-item').forEach(item =&gt; {
+  item.addEventListener('click', () =&gt; console.log('клик по', item.dataset.id));
+});
+
+// ХОРОШО: один обработчик на родителе, работает и для ЕЩЁ НЕ СОЗДАННЫХ элементов
+document.querySelector('#ticket-list').addEventListener('click', (event) =&gt; {
+  const item = event.target.closest('.ticket-item');    // closest находит нужный элемент, даже если кликнули по вложенному &lt;span&gt;
+  if (!item) return;                                       // клик был мимо, по пустому месту списка
+  console.log('клик по', item.dataset.id);
+});</code></pre>
+<details class="deep"><summary>🔬 Под капотом: capturing vs bubbling: третий аргумент addEventListener</summary><div class="deep-body">
+
+<p>Событие сначала идёт ВНИЗ от <code>document</code> к цели (capturing phase), затем «отскакивает» и идёт ВВЕРХ от цели обратно к <code>document</code> (bubbling phase). По умолчанию <code>addEventListener(type, fn)</code> слушает фазу всплытия (bubbling) — поэтому делегирование работает: клик по дочернему элементу «всплывает» до родителя с обработчиком. Третий аргумент <code>{ capture: true }</code> заставит слушать фазу погружения — редко нужно, но объясняет, почему <code>event.stopPropagation()</code> в обработчике на дочернем элементе может помешать родительскому обработчику сработать вообще.</p>
+</div></details>
+
+<h2 id="sec-13"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-13"></label>13. Модули: ESM vs CommonJS vs бандлер <a class="anchor" href="#sec-13">#</a></h2>
+
+<table>
+<tr><th></th><th>CommonJS (Node, старый)</th><th>ESM — ES Modules (стандарт языка)</th></tr>
+<tr><td>Синтаксис</td><td><code>const x = require('./mod')</code> / <code>module.exports = x</code></td><td><code>import x from './mod.js'</code> / <code>export default x</code></td></tr>
+<tr><td>Когда резолвится</td><td>во время выполнения (динамически)</td><td>статически, до выполнения — движок строит граф зависимостей заранее</td></tr>
+<tr><td>Расширение файла в импорте</td><td>необязательно</td><td>обязательно в браузере и в Node ESM: <code>'./mod.js'</code>, не <code>'./mod'</code></td></tr>
+<tr><td>this на верхнем уровне</td><td><code>module.exports</code></td><td><code>undefined</code></td></tr>
+<tr><td>Работает в браузере без сборки?</td><td>нет</td><td>да: <code>&lt;script type="module"&gt;</code></td></tr>
+<tr><td>Tree-shaking (выбросить неиспользуемое)</td><td>сложно — динамическая природа мешает анализу</td><td>легко — статический граф позволяет бандлеру выкинуть мёртвый код</td></tr>
+</table>
+<pre><code>&lt;!-- в браузере, БЕЗ единого бандлера, единственная нужная настройка: --&gt;
+&lt;script type="module" src="./src/main.js"&gt;&lt;/script&gt;
+
+// src/store.js
+export function createStore(initial) { /* ... */ }
+export const DEFAULT_STATUS = 'open';
+
+// src/main.js
+import { createStore, DEFAULT_STATUS } from './store.js';       // ОБЯЗАТЕЛЬНО с .js — это не Node require, а веб-стандарт</code></pre>
+
+<p><b>Что бандлер (Vite/Webpack) добавляет поверх нативных ESM:</b> объединение сотен файлов в несколько для меньшего числа HTTP-запросов, транспиляцию нового синтаксиса для старых браузеров, поддержку не-JS импортов (<code>import styles from './x.css'</code>), hot module replacement, tree-shaking с более глубоким анализом, npm-пакеты без ручного скачивания. <b>Что он НЕ добавляет</b>: сам механизм <code>import/export</code> — это уже есть в браузере, и вы это только что запустили без единого билд-шага. В Vue-лабе Vite стоял с первого дня — здесь видно, без чего он на самом деле не обязателен, а что действительно даёт.</p>
+
+<h2 id="sec-14"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-14"></label>14. Storage, structuredClone, своя реактивность на Proxy <a class="anchor" href="#sec-14">#</a></h2>
+
+<h3>14.1 localStorage vs sessionStorage</h3>
+<table>
+<tr><th></th><th>localStorage</th><th>sessionStorage</th></tr>
+<tr><td>Живёт</td><td>пока не удалят явно</td><td>до закрытия вкладки</td></tr>
+<tr><td>Общий между вкладками одного origin</td><td>да</td><td>нет, у каждой вкладки своё</td></tr>
+<tr><td>Хранит</td><td colspan="2">только строки! Объект нужно сериализовать: <code>JSON.stringify</code> / <code>JSON.parse</code></td></tr>
+<tr><td>Лимит</td><td colspan="2">~5-10 МБ в зависимости от браузера</td></tr>
+<tr><td>Синхронный API</td><td colspan="2">да — блокирует поток; не для больших объёмов данных на каждый рендер</td></tr>
+</table>
+<pre><code>localStorage.setItem('filters', JSON.stringify({ status: 'open', q: '' }));
+const saved = JSON.parse(localStorage.getItem('filters') ?? '{}');    // ?? — на случай, если ключа ещё нет (null)
+localStorage.removeItem('filters');
+window.addEventListener('storage', (e) =&gt; {                            // событие storage — срабатывает В ДРУГИХ вкладках, не в текущей!
+  console.log('изменено в другой вкладке:', e.key, e.newValue);
+});</code></pre>
+
+<h3>14.2 structuredClone — глубокое копирование без JSON-трюков</h3>
+<pre><code>const original = { status: 'open', due: new Date(), tags: new Set(['urgent']) };
+const copy = structuredClone(original);                 // глубокая копия, СОХРАНЯЕТ Date, Map, Set, даже циклические ссылки
+copy.due instanceof Date;                                 // true — в отличие от JSON.parse(JSON.stringify()), где Date стала бы строкой
+
+const circular = { name: 'x' }; circular.self = circular;
+structuredClone(circular);                                  // работает; JSON.stringify(circular) бросил бы TypeError</code></pre>
+
+<h3>14.3 Собственная реактивность: Proxy + подписчики</h3>
+<p>То, что Vue называет <code>reactive()</code>, — не магия, а объект <code>Proxy</code>, перехватывающий чтение и запись полей, плюс список функций-подписчиков, которые перезапускаются при изменении. Полная реализация — в сессии 7; здесь принцип на 20 строках.</p>
+<pre><code>function reactive(target, onChange) {
+  return new Proxy(target, {
+    get(obj, key) {
+      return obj[key];                                       // здесь МОГЛА бы быть регистрация "кто читает" — полная версия в сессии 7
+    },
+    set(obj, key, value) {
+      const old = obj[key];
+      obj[key] = value;
+      if (old !== value) onChange(key, value, old);          // уведомляем подписчиков ТОЛЬКО если значение реально изменилось
+      return true;                                             // обязательный return true — иначе Proxy кидает TypeError в strict mode
+    },
+  });
+}
+
+const state = reactive({ count: 0 }, (key, value) =&gt; {
+  console.log(`state.${key} изменилось на`, value);
+  render();                                                     // "рендер" — просто функция, перерисовывающая DOM
+});
+
+state.count++;              // console: "state.count изменилось на 1"; render() вызван автоматически</code></pre>
+<details class="deep"><summary>🔬 Под капотом: чего не хватает этой мини-версии до настоящего Vue reactive()</summary><div class="deep-body">
+
+<p>Три вещи: (1) <b>автоматическое отслеживание зависимостей</b> — Vue не требует явно писать <code>onChange</code>, он сам запоминает, какие реактивные поля были прочитаны ВНУТРИ конкретной функции-эффекта (через ловушку <code>get</code>), и перезапускает только те эффекты, что зависят от изменившегося поля; (2) <b>глубокая реактивность</b> — вложенные объекты тоже должны стать Proxy при первом чтении (лениво, а не сразу рекурсивно); (3) <b>батчинг обновлений</b> — несколько синхронных изменений должны вызвать один перерендер, а не N. Все три — то, что вы реализуете пошагово в сессии 7, дойдя до узнаваемого мини-<code>ref()</code>/<code>reactive()</code>.</p>
+</div></details>
+
+<h2 id="sec-15"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-15"></label>15. Стек, структура проекта, поток данных практики <a class="anchor" href="#sec-15">#</a></h2>
+
+<table>
+<tr><th>Компонент</th><th>Выбор</th><th>Зачем</th></tr>
+<tr><td>Язык</td><td>JavaScript (ES2022+), без TypeScript и без сборки</td><td>цель — язык и рантайм, а не типы или инструменты</td></tr>
+<tr><td>Среда выполнения (сессии 1-4)</td><td>Node.js 22, скрипты запускаются напрямую</td><td>язык без браузера — быстрее итерация, не нужен DOM для чистой логики</td></tr>
+<tr><td>Браузер (сессии 6-8)</td><td>нативные ES-модули, <code>&lt;script type="module"&gt;</code></td><td>увидеть, что даёт браузер сам по себе, без Vite</td></tr>
+<tr><td>Статика отдаётся</td><td>свой сервер на <code>node:http</code>, ~15 строк, дан целиком</td><td>ноль внешних зависимостей даже для дев-сервера — до конца «vanilla»</td></tr>
+<tr><td>Мок-API для fetch</td><td>json-server (только <code>db.json</code>, без кода)</td><td>реальный HTTP, ноль отвлечения на бэкенд-логику</td></tr>
+<tr><td>Тесты</td><td>встроенный <code>node --test</code> + <code>node:assert/strict</code></td><td>даже тесты — без внешнего фреймворка</td></tr>
+</table>
+<pre>js-lab/
+├── docker-compose.yml        dev (node:22, для сессий 1-5 и тестов) · api (json-server, db.json) · web (свой node:http сервер, профиль)
+├── db.json                    { "tickets": [...] }  — данные для json-server
+└── src/
+    ├── playground/             сессии 1-4: чистые .js файлы, запускаются node playground/XX_name.js
+    ├── async/                  сессия 5: fetch-обёртка, debounce/throttle, тесты
+    ├── web/                    сессии 6-8: браузерная часть
+    │   ├── server.js           свой статический сервер (node:http), дан целиком
+    │   ├── index.html          &lt;script type="module" src="/src/web/app/main.js"&gt;
+    │   └── app/
+    │       ├── main.js          точка входа
+    │       ├── api.js           fetch-обёртка к json-server
+    │       ├── reactive.js       Proxy-реактивность (сессия 7)
+    │       ├── router.js         history.pushState роутер (сессия 8)
+    │       ├── store.js          состояние приложения на reactive()
+    │       └── views/            renderTicketList, renderTicketDetail — функции, возвращающие строку/DOM
+    └── __tests__/               *.test.js — node --test</pre>
+
+<h3>Поток одного действия в финальном мини-SPA (сессия 8)</h3>
+<pre>клик по ссылке "/tickets/5"
+  │  router.js: перехватывает клик (preventDefault), history.pushState(null, '', '/tickets/5')
+  ▼
+router вызывает handleRoute() → парсит location.pathname → определяет view (list | detail)
+  │
+  ▼  view === 'detail'  →  api.getTicket(5) [fetch к json-server]
+  ▼
+store.setCurrentTicket(ticket)     ← это ЗАПИСЬ в reactive-объект
+  │  Proxy.set перехватывает, зовёт подписчиков
+  ▼
+render() перечитывает store, строит HTML через шаблонную строку, заменяет innerHTML контейнера
+  │
+  ▼  DOM обновлён; addEventListener на контейнере (делегирование) уже слушает новые узлы — ничего пересоздавать не нужно</pre>
+<div class="insight-box"><span class="tag">ГЛАВНАЯ МЫСЛЬ ЛАБЫ</span><p>К концу сессии 8 вы соберёте своими руками уменьшенную версию того, что Vue делает за вас: реактивное состояние (Proxy), роутинг без перезагрузки страницы (History API), рендер по изменению состояния (руками, без virtual DOM). Финальная таблица сравнит каждую из трёх частей построчно — не абстрактно «Vue удобнее», а «вот 40 строк, которые Vue написал за вас, и вот что происходит, если хочется, скажем, только перерисовать изменившийся элемент, а не весь список».</p></div>
+<div class="next-box"><span class="tag">ПЕРЕД РАЗДЕЛОМ <a href="#sec-16">16</a></span><ul>
+<li>📖 Держать открытым: <a href="https://developer.mozilla.org/ru/docs/Web/API/Document_Object_Model" target="_blank">MDN: DOM</a>, <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Promise" target="_blank">MDN: Promise</a>.</li>
+<li>✅ Docker, Node 22 (для локальных экспериментов вне контейнера, если удобнее), браузер с открытой консолью разработчика.</li>
+</ul></div>
+
+<h2 id="sec-16"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-16"></label>16. Задания: восемь сессий <a class="anchor" href="#sec-16">#</a></h2>
+
+<p>Порядок строгий: сессии 1-4 — чистый язык в Node-песочнице (никакого браузера), сессия 5 добавляет асинхронность и первый реальный HTTP, сессии 6-7 — браузер без фреймворка, сессия 8 — сборка всего в мини-SPA и сравнение с Vue. Ответы «проверь себя» — в <span class="file">docs/js-notes.md</span>.</p>
+<table>
+<tr><th>Сессия</th><th>Тема</th><th>Результат</th></tr>
+<tr><td>1</td><td>Переменные, область видимости, hoisting</td><td>воспроизведён и починен баг с var в цикле тремя способами</td></tr>
+<tr><td>2</td><td>Типы, приведение, объекты, массивы</td><td>рефакторинг императивного кода в функциональный на методах массивов</td></tr>
+<tr><td>3</td><td>this, замыкания, паттерны</td><td>каррирование, мемоизация, приватность до и после #private</td></tr>
+<tr><td>4</td><td>Прототипы, class, Symbol, коллекции</td><td>цепочка прототипов руками → class → сравнение с Map/Set</td></tr>
+<tr><td>5</td><td>Event loop, Promises, fetch, debounce/throttle</td><td>своя очередь задач, реальный fetch к json-server, тесты на node --test</td></tr>
+<tr><td>6</td><td>DOM без фреймворка</td><td>список тикетов рендерится и обновляется без единой строки фреймворка</td></tr>
+<tr><td>7</td><td>Модули, Storage, своя реактивность на Proxy</td><td>мини-reactive() с автослежкой зависимостей и батчингом</td></tr>
+<tr><td>8</td><td>Мини-SPA: роутер + store + рендер, тесты, сравнение с Vue</td><td>рабочее приложение, финальная таблица «vanilla vs Vue»</td></tr>
+</table>
+<div class="session-banner" id="session-1">Сессия <a href="#session-1" style="color:#fff;text-decoration:none">1</a> — Переменные, область видимости, hoisting <span>~2 часа</span></div>
+<div class="step" id="step-1-1"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-1-1"></label><span class="num">Шаг 1.1</span>Стенд: Docker, package.json, три сервиса за профилями<a class="anchor" href="#step-1-1">#</a></span><div class="step-body">
+<pre><code>mkdir js-lab &amp;&amp; cd js-lab &amp;&amp; git init
+mkdir -p src/playground src/async src/web/app src/__tests__ docs</code></pre>
+<pre><code># docker-compose.yml
+services:
+  dev:
+    image: node:22
+    working_dir: /app
+    volumes: [.:/app]
+    command: sleep infinity            # команды запускаем через exec
+
+  api:
+    image: node:22
+    working_dir: /app
+    volumes: [.:/app]
+    command: sh -c "npm install -g json-server@0 &amp;&amp; json-server --watch db.json --port 3001 --host 0.0.0.0"
+    ports: ["3001:3001"]
+    profiles: [api]                    # включим в сессии 5
+
+  web:
+    image: node:22
+    working_dir: /app
+    volumes: [.:/app]
+    command: node src/web/server.js
+    ports: ["5500:5500"]
+    profiles: [web]                    # включим в сессии 6</code></pre>
+<pre><code># package.json
+{
+  "name": "js-lab",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "play": "node",
+    "test": "node --test src/__tests__"
+  }
+}</code></pre>
+<pre><code>docker compose up -d
+docker compose exec dev node --version    # v22.x</code></pre>
+<div class="why"><b>Зачем:</b> Один <code>dev</code>-контейнер для всех сессий 1-5 (никакого билд-шага, никакого package-lock-ада — <code>node</code> из коробки умеет всё, что нужно языку). <code>api</code> и <code>web</code> — за <code>profiles</code>, чтобы не мешать первым сессиям и не падать в рестарт-цикле, пока файлов, которые они должны запускать, ещё не существует.</div>
+</div></div>
+<div class="step" id="step-1-2"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-1-2"></label><span class="num">Шаг 1.2</span>Баг var-в-цикле: воспроизвести и починить тремя способами<a class="anchor" href="#step-1-2">#</a></span><div class="step-body">
+<p>Воспроизводим баг 2 из раздела 1 и три раза его чиним — каждый раз объясняя себе, что изменилось в области видимости.</p><pre><code>// src/playground/01_scope.js
+
+console.log('=== var в цикле: сломанная версия ===');
+for (var i = 0; i &lt; 3; i++) {
+  setTimeout(() =&gt; console.log('var:', i), 0);
+}
+
+console.log('=== фикс 1: let вместо var ===');
+for (let j = 0; j &lt; 3; j++) {
+  setTimeout(() =&gt; console.log('let:', j), 0);
+}
+
+console.log('=== фикс 2: IIFE — как чинили ДО появления let ===');
+for (var k = 0; k &lt; 3; k++) {
+  (function (fixedK) {                                   // каждый вызов IIFE — своя область видимости с копией k
+    setTimeout(() =&gt; console.log('iife:', fixedK), 0);
+  })(k);
+}
+
+console.log('=== фикс 3: передать значение как аргумент setTimeout ===');
+for (var m = 0; m &lt; 3; m++) {
+  setTimeout((fixedM) =&gt; console.log('arg:', fixedM), 0, m);   // третий+ аргумент setTimeout передаётся в callback
+}
+
+console.log('=== синхронный код продолжается, колбэки выше ЕЩЁ НЕ выполнились ===');</code></pre>
+<pre><code>docker compose exec dev node src/playground/01_scope.js</code></pre>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><pre>=== var в цикле: сломанная версия ===
+=== фикс 1: let вместо var ===
+=== фикс 2: IIFE — как чинили ДО появления let ===
+=== фикс 3: передать значение как аргумент setTimeout ===
+=== синхронный код продолжается, колбэки выше ЕЩЁ НЕ выполнились ===
+var: 3
+var: 3
+var: 3
+let: 0
+let: 1
+let: 2
+iife: 0
+iife: 1
+iife: 2
+arg: 0
+arg: 1
+arg: 2</pre></div>
+<div class="why"><b>Зачем:</b> Порядок вывода — сам по себе демонстрация event loop (раздел 9, будет разобрано подробно в сессии 5): весь синхронный код (пять строк <code>console.log('===...')</code>) выполняется целиком, и только потом — все двенадцать отложенных колбэков. <code>var: 3 3 3</code> — переменная <code>i</code> ОДНА на весь цикл, и к моменту, когда движок наконец достаёт колбэки из очереди, цикл давно завершился с <code>i === 3</code>. Три фикса показывают, что «новая переменная на итерации» — не единственный способ решить проблему, просто самый удобный из появившихся последним.</div>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Замените в «фиксе 3» <code>var m</code> на <code>let m</code> и уберите четвёртый аргумент <code>m</code> у <code>setTimeout</code>, вернув <code>fixedM</code> к чтению через замыкание, как в фиксе 1. Дважды исправленный баг — избыточность или разные инструменты для разных ситуаций?</li><li>Что выведет тот же код, если заменить <code>setTimeout(..., 0)</code> на синхронный вызов <code>((fixedK) =&gt; console.log(fixedK))(k)</code> без setTimeout вообще? Почему тогда даже <code>var</code>-версия «работает правильно»?</li></ul></div>
+</div></div>
+<div class="step" id="step-1-3"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-1-3"></label><span class="num">Шаг 1.3</span>TDZ и hoisting: пять экспериментов с конкретными ошибками<a class="anchor" href="#step-1-3">#</a></span><div class="step-body">
+<p>TDZ и hoisting — не абстракция, а конкретные строки, которые либо работают, либо бросают конкретную ошибку. Проверяем экспериментально, не угадывая.</p><pre><code>// src/playground/02_hoisting.js
+
+function demoVar() {
+  console.log('до объявления, var:', typeof a);   // "undefined" — переменная ПОДНЯТА и инициализирована
+  var a = 5;
+  console.log('после объявления, var:', a);
+}
+demoVar();
+
+function demoLet() {
+  try {
+    console.log(b);                                   // выполнится СРАЗУ — до строки let b, но b уже "зарегистрирован" (TDZ)
+  } catch (e) {
+    console.log('до объявления, let бросает:', e.constructor.name, '—', e.message);
+  }
+  let b = 10;
+  console.log('после объявления, let:', b);
+}
+demoLet();
+
+function demoBlockScope() {
+  if (true) {
+    var fnScoped = 'видна во всей функции';
+    let blockScoped = 'видна только в этом if';
+  }
+  console.log('снаружи блока, var:', fnScoped);
+  try { console.log(blockScoped); }
+  catch (e) { console.log('снаружи блока, let бросает:', e.constructor.name); }
+}
+demoBlockScope();
+
+// hoisting самой ФУНКЦИИ — целиком поднимается тело, не только имя
+console.log('вызов до объявления function:', sayHi());
+function sayHi() { return 'работает!'; }
+
+// а вот function expression через const/let так не поднимается:
+try { earlyArrow(); } catch (e) { console.log('вызов до объявления arrow-функции:', e.constructor.name); }
+const earlyArrow = () =&gt; 'не сработает';</code></pre>
+<pre><code>docker compose exec dev node src/playground/02_hoisting.js</code></pre>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><pre>до объявления, var: undefined
+после объявления, var: 5
+до объявления, let бросает: ReferenceError — Cannot access 'b' before initialization
+после объявления, let: 10
+снаружи блока, var: видна во всей функции
+снаружи блока, let бросает: ReferenceError
+вызов до объявления function: работает!
+вызов до объявления arrow-функции: ReferenceError</pre></div>
+<div class="why"><b>Зачем:</b> Пять разных подтверждений одного правила: <code>var</code> и объявления <code>function</code> поднимаются ПОЛНОСТЬЮ (со значением/телом), <code>let</code>/<code>const</code> поднимаются только «по имени» (TDZ), а присвоенная в <code>const</code> стрелочная функция не поднимается вообще как вызываемая — потому что до строки <code>const earlyArrow = ...</code> сама переменная в TDZ, и обратиться к ней (чтобы вызвать) невозможно.</div>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Почему в сообщении об ошибке TDZ написано именно «Cannot access... before initialization», а не «is not defined» (как для действительно необъявленной переменной)? Проверьте разницу, попробовав <code>console.log(totallyUndeclaredVar)</code>.</li><li>Объявите <code>function sayHi</code> ВНУТРИ блока <code>{ }</code> и попробуйте вызвать снаружи блока. Работает ли hoisting функций через границу блока так же, как через границу функции?</li></ul></div>
+</div></div>
+<div class="next-box"><span class="tag">ИТОГ СЕССИИ 1 → ПЕРЕД СЕССИЕЙ 2</span><ul>
+<li>✅ <code>git add -A && git commit -m "session 1: scope and hoisting"</code></li>
+<li>📝 Ответы 1.2–1.3 в <span class="file">docs/js-notes.md</span>.</li>
+<li>📖 Почитать: <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Equality_comparisons_and_sameness" target="_blank">MDN: Equality comparisons and sameness</a> — сессия 2 целиком про это.</li>
+</ul></div>
+<div class="session-banner" id="session-2">Сессия <a href="#session-2" style="color:#fff;text-decoration:none">2</a> — Типы, приведение, объекты, массивы <span>~2,5 часа</span></div>
+<div class="step" id="step-2-1"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-2-1"></label><span class="num">Шаг 2.1</span>Приведение типов, falsy-ловушка, NaN, сравнение объектов — пять экспериментов<a class="anchor" href="#step-2-1">#</a></span><div class="step-body">
+<p>Баг 1 и баг 4 из раздела 1 — воспроизводим оба, потом чиним. Плюс полный прогон таблицы == из раздела 3, чтобы не верить на слово, а увидеть.</p><pre><code>// src/playground/03_coercion.js
+
+console.log('=== пять результатов ==, которые ломают интуицию ===');
+console.log('0 == "":', 0 == '');
+console.log('0 == "0":', 0 == '0');
+console.log('null == undefined:', null == undefined);
+console.log('null == 0:', null == 0);
+console.log('NaN == NaN:', NaN == NaN);
+console.log('[] == ![]:', [] == ![]);
+
+console.log('=== falsy-ловушка (баг 1 из раздела 1) ===');
+function describeQty(qty) {
+  if (qty) return `В наличии: ${qty}`;
+  return 'Нет в наличии';
+}
+console.log(describeQty(5));    // "В наличии: 5"
+console.log(describeQty(0));    // "Нет в наличии" — а это МОЖЕТ БЫТЬ неверно: 0 это тоже валидное число!
+
+function describeQtyFixed(qty) {
+  if (qty === undefined || qty === null) return 'Нет данных';    // отличаем "нет данных" от "данных 0" явно
+  return `В наличии: ${qty}`;
+}
+console.log(describeQtyFixed(0));          // "В наличии: 0" — теперь честно
+console.log(describeQtyFixed(undefined));  // "Нет данных"
+
+console.log('=== NaN и две isNaN ===');
+console.log('typeof NaN:', typeof NaN);
+console.log('isNaN("hello"):', isNaN('hello'));            // true — ловушка: приводит строку к числу СНАЧАЛА
+console.log('Number.isNaN("hello"):', Number.isNaN('hello'));  // false — не приводит, строка это просто не NaN
+
+console.log('=== сравнение объектов (баг 4) ===');
+const a = { qty: 5 };
+const b = { qty: 5 };
+console.log('a === b:', a === b);                          // false — разные ссылки
+console.log('a.qty === b.qty:', a.qty === b.qty);            // true — сравнили содержимое явно
+console.log('JSON.stringify(a) === JSON.stringify(b):', JSON.stringify(a) === JSON.stringify(b));   // true, но хрупко (порядок ключей!)</code></pre>
+<pre><code>docker compose exec dev node src/playground/03_coercion.js</code></pre>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><pre>=== пять результатов ==, которые ломают интуицию ===
+0 == "": true
+0 == "0": true
+null == undefined: true
+null == 0: false
+NaN == NaN: false
+[] == ![]: true
+=== falsy-ловушка (баг 1 из раздела 1) ===
+В наличии: 5
+Нет в наличии
+В наличии: 0
+Нет данных
+=== NaN и две isNaN ===
+typeof NaN: number
+isNaN("hello"): true
+Number.isNaN("hello"): false
+=== сравнение объектов (баг 4) ===
+a === b: false
+a.qty === b.qty: true
+JSON.stringify(a) === JSON.stringify(b): true</pre></div>
+<div class="why"><b>Зачем:</b> <code>null == 0</code> возвращает <code>false</code>, хотя оба «выглядят пусто» — это специальное правило спецификации: <code>null</code> и <code>undefined</code> равны ТОЛЬКО друг другу и больше никому, даже после приведения типов. Это единственное правило <code>==</code>, которое стоит держать в голове и осознанно использовать (<code>x == null</code> как компактная проверка обоих сразу) — все остальные результаты таблицы лучше не запоминать, а просто не пользоваться <code>==</code> вообще, кроме этого случая.</div>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Напишите <code>isEmpty(value)</code>, которая возвращает <code>true</code> для <code>null</code>, <code>undefined</code> и пустой строки, но <code>false</code> для <code>0</code> и <code>false</code>. Сколько сравнений понадобится и какие именно?</li><li>Почему <code>JSON.stringify(a) === JSON.stringify(b)</code> — «хрупкое» сравнение содержимого? Приведите пример двух объектов с одинаковыми полями, для которых оно даст неверный ответ.</li></ul></div>
+</div></div>
+<div class="step" id="step-2-2"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-2-2"></label><span class="num">Шаг 2.2</span>От циклов к map/filter/reduce/flatMap; неизменяемое обновление вместо мутации<a class="anchor" href="#step-2-2">#</a></span><div class="step-body">
+<p>Рефакторинг императивного кода (циклы, ручные проверки) в функциональный стиль на методах массивов — то, что реально экономит строки и снижает число багов на практике.</p><pre><code>// src/playground/04_arrays.js
+
+const tickets = [
+  { id: 1, title: 'VPN не работает', status: 'open', priority: 'high', tags: ['network'] },
+  { id: 2, title: 'Принтер сломан', status: 'closed', priority: 'low', tags: ['hardware'] },
+  { id: 3, title: 'Ошибка 500', status: 'open', priority: 'high', tags: ['web', 'bug'] },
+  { id: 4, title: 'Нужен доступ', status: 'open', priority: 'low', tags: ['access'] },
+];
+
+// ── ДО: императивно ──────────────────────────────────────────────────────────
+function getOpenHighPriorityTitles_v1(list) {
+  const result = [];
+  for (let i = 0; i &lt; list.length; i++) {
+    if (list[i].status === 'open' &amp;&amp; list[i].priority === 'high') {
+      result.push(list[i].title);
+    }
+  }
+  return result;
+}
+
+// ── ПОСЛЕ: функционально ──────────────────────────────────────────────────────
+const getOpenHighPriorityTitles_v2 = (list) =&gt;
+  list.filter(t =&gt; t.status === 'open' &amp;&amp; t.priority === 'high').map(t =&gt; t.title);
+
+console.log(getOpenHighPriorityTitles_v1(tickets));
+console.log(getOpenHighPriorityTitles_v2(tickets));       // тот же результат, короче и без ручного индекса
+
+// ── деструктуризация в параметрах + spread для "плоского" списка тегов ──────
+function summarize({ id, title, tags }) { return `#${id} ${title} [${tags.join(', ')}]`; }
+console.log(tickets.map(summarize));
+
+const allTagsFlat = tickets.flatMap(t =&gt; t.tags);          // flatMap = map + flat(1) одной операцией
+console.log(allTagsFlat);
+console.log([...new Set(allTagsFlat)]);                     // уникальные теги: Set + spread — без ручного цикла с проверкой includes
+
+// ── группировка через reduce ──────────────────────────────────────────────────
+const byStatus = tickets.reduce((acc, t) =&gt; {
+  (acc[t.status] ??= []).push(t.id);
+  return acc;
+}, {});
+console.log(byStatus);            // { open: [1, 3, 4], closed: [2] }
+
+// ── неизменяемое обновление вместо мутации (важно для будущей реактивности, раздел 7) ──
+function closeTicket(list, id) {
+  return list.map(t =&gt; t.id === id ? { ...t, status: 'closed' } : t);   // НОВЫЙ массив, НОВЫЙ объект для изменённого элемента
+}
+const updated = closeTicket(tickets, 1);
+console.log(tickets.find(t =&gt; t.id === 1).status);    // "open" — исходный массив НЕ тронут
+console.log(updated.find(t =&gt; t.id === 1).status);      // "closed"</code></pre>
+<pre><code>docker compose exec dev node src/playground/04_arrays.js</code></pre>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><pre>[ 'VPN не работает', 'Ошибка 500' ]
+[ 'VPN не работает', 'Ошибка 500' ]
+[
+  '#1 VPN не работает [network]',
+  '#2 Принтер сломан [hardware]',
+  '#3 Ошибка 500 [web, bug]',
+  '#4 Нужен доступ [access]'
+]
+[ 'network', 'hardware', 'web', 'bug', 'access' ]
+[ 'network', 'hardware', 'web', 'bug', 'access' ]
+{ open: [ 1, 3, 4 ], closed: [ 2 ] }
+open
+closed</pre></div>
+<div class="why"><b>Зачем:</b> <code>filter().map()</code> вместо ручного цикла с <code>if</code> и <code>push</code> — не просто «короче», а <b>именованное намерение</b>: читатель видит «оставить подходящие, затем преобразовать» одним взглядом, не разбирая тело цикла построчно. <code>{ ...t, status: 'closed' }</code> вместо <code>t.status = 'closed'</code> — принципиальный выбор для раздела 14: реактивность на Proxy и большинство фреймворков ждут НОВУЮ ссылку на объект, чтобы обнаружить изменение; мутация существующего объекта «на месте» ломает эту модель незаметно.</div>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Перепишите <code>closeTicket</code> так, чтобы он мутировал исходный массив (через <code>forEach</code> и прямое присваивание <code>t.status = ...</code>). Какой тест сломается, если где-то в коде полагались на то, что <code>tickets</code> не меняется?</li><li>Замените <code>[...new Set(allTagsFlat)]</code> на способ без Set (ручная проверка <code>includes</code> в цикле или через <code>filter</code> с индексом). Сколько строк это займёт и почему Set-версия предпочтительнее не только по длине?</li></ul></div>
+</div></div>
+<div class="next-box"><span class="tag">ИТОГ СЕССИИ 2 → ПЕРЕД СЕССИЕЙ 3</span><ul>
+<li>✅ <code>git commit -am "session 2: coercion and arrays"</code></li>
+<li>📝 Ответы 2.1–2.2.</li>
+<li>📖 Почитать: <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Closures" target="_blank">MDN: Closures</a> — сессия 3 целиком про это плюс this.</li>
+</ul></div>
+<div class="session-banner" id="session-3">Сессия <a href="#session-3" style="color:#fff;text-decoration:none">3</a> — this, замыкания, паттерны <span>~2,5 часа</span></div>
+<div class="step" id="step-3-1"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-3-1"></label><span class="num">Шаг 3.1</span>this: четыре способа сохранить контекст в колбэке<a class="anchor" href="#step-3-1">#</a></span><div class="step-body">
+<p>Баг 3 из раздела 1 — воспроизводим и чиним четырьмя разными способами, каждый раз объясняя, ПОЧЕМУ он работает.</p><pre><code>// src/playground/05_this.js
+
+const cart = {
+  items: ['bolt', 'nut'],
+  prefix: '→',
+
+  printItems_broken() {
+    this.items.forEach(function (item) {
+      console.log(this?.prefix, item);       // this внутри обычной function НЕ cart!
+    });
+  },
+
+  printItems_arrow() {
+    this.items.forEach((item) =&gt; {            // фикс 1: стрелочная функция берёт this снаружи
+      console.log(this.prefix, item);
+    });
+  },
+
+  printItems_selfVar() {
+    const self = this;                          // фикс 2: сохранить this в обычную переменную (работает в любом движке)
+    this.items.forEach(function (item) {
+      console.log(self.prefix, item);
+    });
+  },
+
+  printItems_bind() {
+    this.items.forEach(function (item) {
+      console.log(this.prefix, item);
+    }.bind(this));                                // фикс 3: явно привязать this к колбэку
+  },
+
+  printItems_thisArg() {
+    this.items.forEach(function (item) {          // фикс 4: forEach принимает thisArg ВТОРЫМ аргументом
+      console.log(this.prefix, item);
+    }, this);
+  },
+};
+
+console.log('=== broken ==='); cart.printItems_broken();
+console.log('=== arrow ===');  cart.printItems_arrow();
+console.log('=== selfVar ==='); cart.printItems_selfVar();
+console.log('=== bind ===');    cart.printItems_bind();
+console.log('=== thisArg ==='); cart.printItems_thisArg();
+
+// this при вызове КАК ЧИСТАЯ функция (не через объект) — потеря контекста при передаче метода
+console.log('=== метод, оторванный от объекта ===');
+const loosePrint = cart.printItems_arrow;
+try { loosePrint(); } catch (e) { console.log('упало:', e.constructor.name); }   // this внутри arrow всё ещё смотрит на cart (лексически)! Проверьте printItems_bind так же — там this потеряется.</code></pre>
+<pre><code>docker compose exec dev node src/playground/05_this.js</code></pre>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><pre>=== broken ===
+undefined bolt
+undefined nut
+=== arrow ===
+→ bolt
+→ nut
+=== selfVar ===
+→ bolt
+→ nut
+=== bind ===
+→ bolt
+→ nut
+=== thisArg ===
+→ bolt
+→ nut
+=== метод, оторванный от объекта ===
+→ bolt
+→ nut</pre></div>
+<div class="why"><b>Зачем:</b> Четыре фикса решают одну и ту же проблему четырьмя разными механизмами: (1) стрелочная функция вообще не имеет собственного <code>this</code> — она смотрит наружу, в момент СОЗДАНИЯ, а не вызова; (2) переменная <code>self</code> — обходной путь до появления стрелочных функций (код на ES5, который до сих пор встречается в старых проектах); (3) <code>.bind(this)</code> — создаёт новую функцию с намертво прибитым контекстом; (4) второй аргумент <code>forEach</code> — малоизвестная, но валидная возможность, которая есть у многих методов массива (<code>map</code>, <code>filter</code>, <code>find</code> тоже принимают <code>thisArg</code>).</div>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Последний эксперимент («метод, оторванный от объекта») сработал для <code>printItems_arrow</code>, потому что стрелочная функция помнит <code>this</code> лексически. Проверьте то же самое для <code>const loose = cart.printItems_bind; loose();</code> — сработает ли, и почему?</li><li>Что выведет <code>console.log(this)</code> на самом верхнем уровне файла (вне какой-либо функции)? Проверьте — и объясните разницу между CommonJS-модулем и ES-модулем (раздел 13 объяснит подробно).</li></ul></div>
+</div></div>
+<div class="step" id="step-3-2"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-3-2"></label><span class="num">Шаг 3.2</span>Каррирование и мемоизация: измеримая разница до/после<a class="anchor" href="#step-3-2">#</a></span><div class="step-body">
+<p>Каррирование и мемоизация не как абстрактные примеры из книжки, а с измеримым эффектом: секундомер до/после мемоизации.</p><pre><code>// src/playground/06_closures.js
+
+// ── каррирование: скидка на товар, применяемая по частям ────────────────────
+const applyDiscount = (percent) =&gt; (price) =&gt; Math.round(price * (1 - percent));
+const tenPercentOff = applyDiscount(0.1);
+const twentyPercentOff = applyDiscount(0.2);
+console.log(tenPercentOff(1000), twentyPercentOff(1000));    // 900 800 — каждая версия скидки переиспользуема
+
+// ── мемоизация с измерением времени ──────────────────────────────────────────
+function memoize(fn) {
+  const cache = new Map();
+  return (...args) =&gt; {
+    const key = JSON.stringify(args);
+    if (cache.has(key)) return cache.get(key);
+    const result = fn(...args);
+    cache.set(key, result);
+    return result;
+  };
+}
+
+function slowFibonacci(n) {                        // намеренно неэффективная рекурсия — экспоненциальное время
+  if (n &lt;= 1) return n;
+  return slowFibonacci(n - 1) + slowFibonacci(n - 2);
+}
+const fastFibonacci = memoize(slowFibonacci);        // ЗАМЕТЬТЕ: мемоизирует только внешний вызов, не рекурсивные — см. "под капотом"
+
+console.time('первый вызов slowFibonacci(30)');
+slowFibonacci(30);
+console.timeEnd('первый вызов slowFibonacci(30)');
+
+console.time('первый вызов fastFibonacci(30)');
+fastFibonacci(30);
+console.timeEnd('первый вызов fastFibonacci(30)');
+
+console.time('ПОВТОРНЫЙ вызов fastFibonacci(30)');
+fastFibonacci(30);
+console.timeEnd('ПОВТОРНЫЙ вызов fastFibonacci(30)');    // должно быть на порядки быстрее — из кэша</code></pre>
+<pre><code>docker compose exec dev node src/playground/06_closures.js</code></pre>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><pre>900 800
+первый вызов slowFibonacci(30): ~15-40ms
+первый вызов fastFibonacci(30): ~15-40ms   ← примерно так же медленно: кэш ещё пуст, внутренние рекурсивные вызовы НЕ проходят через memoize
+ПОВТОРНЫЙ вызов fastFibonacci(30): ~0.01ms  ← мгновенно, взято из кэша по ключу "[30]"</pre></div>
+<div class="why"><b>Зачем:</b> Замыкание здесь делает вещь, невозможную без него: <code>cache</code> живёт МЕЖДУ вызовами возвращённой функции, но полностью недоступен снаружи — ни прочитать, ни испортить напрямую. Это ровно тот же механизм, что в module pattern (раздел 6.1): приватность через область видимости, а не через соглашение об именах.</div>
+<details class="deep"><summary>🔬 Под капотом: почему fastFibonacci(30) первый раз всё ещё медленный</summary><div class="deep-body">
+
+<p><code>memoize</code> оборачивает только внешний вызов <code>fastFibonacci(30)</code>. Внутри <code>slowFibonacci</code> рекурсивно вызывает САМ СЕБЯ (<code>slowFibonacci</code>, не <code>fastFibonacci</code>) — эти внутренние вызовы мемоизации не видят вообще. Чтобы ускорить и их, нужно мемоизировать саму рекурсивную ссылку: <code>function fib(n) { if (n &lt;= 1) return n; return fib(n-1) + fib(n-2); } const memoFib = memoize(fib); fib = memoFib;</code> — приём, требующий, чтобы функция рекурсивно ссылалась на переменную, которую затем переприсваивают на мемоизированную версию. Попробуйте сделать это как отдельное упражнение и измерьте разницу.</p>
+</div></details>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Реализуйте вариант <code>memoize</code>, где кэш — обычный объект <code>{}</code>, а не <code>Map</code>. В чём разница по сравнению с Map для ключей (вспомните таблицу из раздела 8.2)? Сработает ли, если аргумент — объект, а не примитив?</li><li>Напишите <code>once(fn)</code> — функцию, которая выполнит <code>fn</code> только при первом вызове, а при последующих будет возвращать сохранённый результат первого раза, даже если аргументы другие. Это частный случай мемоизации или что-то иное?</li></ul></div>
+</div></div>
+<div class="step" id="step-3-3"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-3-3"></label><span class="num">Шаг 3.3</span>Приватность до и после #private: замыкание vs class бок о бок<a class="anchor" href="#step-3-3">#</a></span><div class="step-body">
+<p>Приватность: как её делали до <code>#private</code> (замыкание/module pattern) и как теперь — сравнение бок о бок на одном примере.</p><pre><code>// src/playground/07_private.js
+
+// ── ДО #private: приватность через замыкание (фабричная функция, без class) ─
+function createAccount(owner) {
+  let balance = 0;                                    // ПОЛНОСТЬЮ недоступно снаружи — не "соглашение", а физика области видимости
+  return {
+    owner,
+    deposit(amount) { balance += amount; return this; },
+    get balance() { return balance; },                 // единственный способ прочитать — через этот геттер
+  };
+}
+const acc1 = createAccount('Анна');
+acc1.deposit(100);
+console.log(acc1.balance);          // 100
+console.log(acc1.balance_ ?? acc1.balance);   // никакого поля balance нет вообще — только то, что вернула фабрика
+
+// ── ПОСЛЕ #private: то же самое через class ──────────────────────────────────
+class Account {
+  #balance = 0;
+  constructor(owner) { this.owner = owner; }
+  deposit(amount) { this.#balance += amount; return this; }
+  get balance() { return this.#balance; }
+}
+const acc2 = new Account('Борис');
+acc2.deposit(100);
+console.log(acc2.balance);          // 100
+
+// РАЗНИЦА, которую не видно на первый взгляд: instanceof и наследование
+console.log(acc1 instanceof Object, acc2 instanceof Account);    // объект из фабрики — просто Object; из class — именованный тип
+console.log(typeof createAccount, typeof Account);                // "function" ОБА — Account тоже функция под капотом (раздел 7.2)</code></pre>
+<pre><code>docker compose exec dev node src/playground/07_private.js</code></pre>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><pre>100
+100
+100
+true true
+function function</pre></div>
+<div class="why"><b>Зачем:</b> Оба подхода дают одинаковую внешнюю гарантию — <code>balance</code> нельзя изменить в обход <code>deposit</code>. Разница — в инструментах вокруг: <code>class</code> даёт <code>instanceof</code>, наследование через <code>extends</code>, единообразный синтаксис методов; фабричная функция с замыканием ничего этого не имеет «бесплатно», зато не требует <code>new</code> и не подвержена типичным ошибкам класса вроде забытого <code>new</code> перед вызовом конструктора (в старом ES5-коде без class это была реальная проблема; в современном class отсутствие <code>new</code> — TypeError, а не тихий баг).</div>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Попробуйте вызвать <code>Account('Виктор')</code> БЕЗ <code>new</code>. Что произойдёт и почему это лучше, чем тихая поломка (которая была бы в ES5-функциях-конструкторах без class)?</li><li>Есть ли способ добавить в фабричную версию (<code>createAccount</code>) метод, который умножает баланс, используя приватную переменную из ДРУГОГО такого же объекта (например, «перевести половину баланса от acc1 к acc2»)? Что мешает — и мешает ли то же самое версии с <code>#balance</code>?</li></ul></div>
+</div></div>
+<div class="next-box"><span class="tag">ИТОГ СЕССИИ 3 → ПЕРЕД СЕССИЕЙ 4</span><ul>
+<li>✅ <code>git commit -am "session 3: this and closures"</code></li>
+<li>📝 Ответы 3.1–3.3.</li>
+<li>📖 Почитать: <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Operators/new/target" target="_blank">MDN: Object.create()</a>, <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Map" target="_blank">MDN: Map</a> — сессия 4 целиком про прототипы и коллекции.</li>
+</ul></div>
+<div class="session-banner" id="session-4">Сессия <a href="#session-4" style="color:#fff;text-decoration:none">4</a> — Прототипы, class, Symbol, коллекции <span>~2,5 часа</span></div>
+<div class="step" id="step-4-1"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-4-1"></label><span class="num">Шаг 4.1</span>Object.create() vs class: одна и та же цепочка прототипов, доказано<a class="anchor" href="#step-4-1">#</a></span><div class="step-body">
+<p>Строим цепочку прототипов руками, потом ту же иерархию через <code>class</code> — и доказываем экспериментально, что это один и тот же механизм.</p><pre><code>// src/playground/08_prototypes.js
+
+// ── руками, через Object.create ──────────────────────────────────────────────
+const entityProto = {
+  describe() { return `#${this.id}`; },
+};
+const ticketProto = Object.create(entityProto);           // ticketProto.__proto__ === entityProto
+ticketProto.open = function () { this.status = 'open'; return this; };
+
+const ticket1 = Object.create(ticketProto);                 // ticket1.__proto__ === ticketProto
+ticket1.id = 1;
+ticket1.open();
+console.log(ticket1.describe());                             // "#1" — метод найден через ДВА уровня прототипов
+console.log(ticket1.status);                                  // "open"
+
+// цепочка целиком:
+console.log(Object.getPrototypeOf(ticket1) === ticketProto);            // true
+console.log(Object.getPrototypeOf(ticketProto) === entityProto);         // true
+console.log(Object.getPrototypeOf(entityProto) === Object.prototype);    // true — вершина почти всех цепочек
+console.log(Object.getPrototypeOf(Object.prototype));                     // null — конец цепочки
+
+// ── то же самое через class ───────────────────────────────────────────────────
+class Entity {
+  describe() { return `#${this.id}`; }
+}
+class Ticket extends Entity {
+  open() { this.status = 'open'; return this; }
+}
+const ticket2 = new Ticket();
+ticket2.id = 2;
+ticket2.open();
+console.log(ticket2.describe());     // "#2"
+
+// ДОКАЗАТЕЛЬСТВО что class — та же цепочка прототипов:
+console.log(Object.getPrototypeOf(ticket2) === Ticket.prototype);              // true
+console.log(Object.getPrototypeOf(Ticket.prototype) === Entity.prototype);      // true
+console.log(ticket2.describe === Entity.prototype.describe);                     // true — метод физически лежит в Entity.prototype</code></pre>
+<pre><code>docker compose exec dev node src/playground/08_prototypes.js</code></pre>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><pre>#1
+open
+true
+true
+true
+null
+#2
+true
+true
+true</pre></div>
+<div class="why"><b>Зачем:</b> Обе версии дают идентичную цепочку прототипов — <code>class</code> не создаёт никакого нового механизма, он лишь описывает тот же <code>Object.create</code>-подход в привычном для других языков синтаксисе. Последняя строка — самое прямое доказательство: метод <code>describe</code>, вызванный на <code>ticket2</code>, физически ХРАНИТСЯ в <code>Entity.prototype</code>, не копируется в каждый экземпляр — поэтому добавление метода в prototype ПОСЛЕ создания экземпляров тоже сработает для них всех.</div>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Добавьте метод <code>Entity.prototype.greet = function() { return 'привет'; }</code> ПОСЛЕ того, как <code>ticket2</code> уже создан. Появится ли у <code>ticket2</code> этот метод? Что это говорит о том, КОГДА именно происходит поиск метода — при создании объекта или при каждом обращении?</li><li>Сравните <code>ticket1.hasOwnProperty('id')</code> и <code>ticket1.hasOwnProperty('describe')</code>. Объясните разницу, опираясь на то, где физически лежит каждое из этих полей.</li></ul></div>
+</div></div>
+<div class="step" id="step-4-2"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-4-2"></label><span class="num">Шаг 4.2</span>class Ticket: #private, static, геттеры/сеттеры, extends/super<a class="anchor" href="#step-4-2">#</a></span><div class="step-body">
+<p>Полноценный класс с приватностью, статикой и геттерами/сеттерами — не абстрактный BankAccount, а часть будущего домена (тикеты).</p><pre><code>// src/playground/09_class.js
+
+const VALID_STATUSES = ['open', 'in_progress', 'closed'];
+
+class Ticket {
+  #status = 'open';                              // приватное поле с дефолтным значением
+  static #totalCreated = 0;                       // статическое приватное поле — общий счётчик для ВСЕХ тикетов
+
+  constructor(title, priority = 'medium') {
+    if (!title?.trim()) throw new RangeError('title обязателен');
+    this.title = title.trim();
+    this.priority = priority;
+    this.createdAt = new Date();
+    Ticket.#totalCreated++;
+  }
+
+  get status() { return this.#status; }             // геттер: читается как поле, без скобок
+  set status(value) {                                 // сеттер: перехватывает присваивание, может валидировать
+    if (!VALID_STATUSES.includes(value)) {
+      throw new RangeError(`недопустимый статус: ${value}`);
+    }
+    this.#status = value;
+  }
+
+  close() { this.status = 'closed'; return this; }    // return this — цепочка вызовов
+
+  static get totalCreated() { return Ticket.#totalCreated; }   // статический геттер — читает статическое приватное поле
+}
+
+class UrgentTicket extends Ticket {                    // наследование — сахар над прототипами, но синтаксис привычный
+  constructor(title) {
+    super(title, 'urgent');                             // super() ОБЯЗАТЕЛЕН до обращения к this в конструкторе потомка
+  }
+  close() {
+    console.log('Срочный тикет закрыт, уведомляем менеджера!');
+    return super.close();                                // явный вызов родительского метода
+  }
+}
+
+const t1 = new Ticket('Обычная задача');
+const t2 = new UrgentTicket('Всё сломалось');
+
+t1.close();
+t2.close();
+
+console.log(t1.status, t2.status);          // closed closed
+console.log(Ticket.totalCreated);            // 2 — считает ОБА, включая наследника
+console.log(t2 instanceof Ticket, t2 instanceof UrgentTicket);   // true true
+
+try { t1.status = 'unknown'; } catch (e) { console.log('сеттер отклонил:', e.message); }
+// console.log(t1.#status);                  // SyntaxError на этапе парсинга, если раскомментировать — не рантайм!</code></pre>
+<pre><code>docker compose exec dev node src/playground/09_class.js</code></pre>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><pre>Срочный тикет закрыт, уведомляем менеджера!
+closed closed
+2
+true true
+сеттер отклонил: недопустимый статус: unknown</pre></div>
+<div class="why"><b>Зачем:</b> <code>UrgentTicket.close()</code> демонстрирует классический паттерн переопределения с расширением: сделать что-то своё, затем явно позвать <code>super.close()</code>, а не дублировать логику родителя. Статический счётчик <code>#totalCreated</code> общий для ВСЕХ экземпляров, включая через наследников (<code>UrgentTicket</code> не имеет своей копии — <code>Ticket.#totalCreated++</code> в конструкторе родителя срабатывает при создании любого потомка тоже). Сеттер <code>status</code> — единственная дверь для изменения приватного поля, и именно в неё встроена валидация: тот же принцип защиты инвариантов, что был в ООП-лабе.</div>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Уберите <code>super(title, 'urgent')</code> из <code>UrgentTicket</code> и попробуйte создать экземпляр. Какую ошибку выдаст движок и на каком именно шаге (парсинг, вызов конструктора, обращение к this)?</li><li>Добавьте в <code>Ticket</code> статический метод <code>static fromJSON(json)</code>, создающий тикет из объекта <code>{ title, priority }</code>. Почему это принято делать статическим методом, а не обычной функцией снаружи класса?</li></ul></div>
+</div></div>
+<div class="step" id="step-4-3"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-4-3"></label><span class="num">Шаг 4.3</span>Map/Set/WeakMap на конкретной задаче: счётчик просмотров и приватные данные<a class="anchor" href="#step-4-3">#</a></span><div class="step-body">
+<p>Map/Set/WeakMap на практике — не абстрактно «зачем нужны», а на конкретной задаче, где Object был бы хуже.</p><pre><code>// src/playground/10_collections.js
+
+// ── Map: ключи — сами объекты тикетов, не их id ──────────────────────────────
+const viewCounts = new Map();                        // сколько раз каждый тикет открывали — считаем ПО ССЫЛКЕ на объект
+const t1 = { id: 1, title: 'Задача A' };
+const t2 = { id: 2, title: 'Задача B' };
+
+function recordView(ticket) {
+  viewCounts.set(ticket, (viewCounts.get(ticket) ?? 0) + 1);
+}
+recordView(t1); recordView(t1); recordView(t2);
+console.log(viewCounts.get(t1), viewCounts.get(t2));    // 2 1
+console.log(viewCounts.size);                             // 2
+
+// с обычным объектом так не получится: ключи объекта ВСЕГДА строки/символы,
+// пришлось бы использовать t1.id как ключ — а если у двух РАЗНЫХ объектов случайно одинаковый id?
+
+// ── Set: убрать дубли и быстро проверять "есть ли" ────────────────────────────
+const watchedIds = new Set([1, 2, 3]);
+watchedIds.add(2);                     // уже есть — ничего не изменится
+console.log(watchedIds.size);           // 3, не 4
+console.log(watchedIds.has(2));         // true — O(1), в отличие от array.includes O(n)
+
+// ── WeakMap: приватные данные, привязанные к объекту, без утечки памяти ──────
+const privateData = new WeakMap();       // если ticket будет удалён из памяти (нет других ссылок) — запись тоже исчезнет САМА
+function attachSecret(ticket, secret) { privateData.set(ticket, secret); }
+function readSecret(ticket) { return privateData.get(ticket); }
+
+let tempTicket = { id: 99 };
+attachSecret(tempTicket, 'внутренний код');
+console.log(readSecret(tempTicket));      // "внутренний код"
+tempTicket = null;                          // единственная ссылка на объект убрана — сборщик мусора МОЖЕТ забрать и объект, и запись в WeakMap
+// нельзя проверить это напрямую (WeakMap не даёт .size и не перечисляем) — в этом и суть: вы просто не думаете об очистке
+console.log(privateData.size);              // undefined — WeakMap физически не имеет этого свойства</code></pre>
+<pre><code>docker compose exec dev node src/playground/10_collections.js</code></pre>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><pre>2 1
+2
+3
+true
+внутренний код
+undefined</pre></div>
+<div class="why"><b>Зачем:</b> <code>Map</code> с объектом-ключом решает задачу, которую <code>{}</code> решить в принципе не может: связать данные с конкретным экземпляром, а не с его строковым представлением. <code>Set.has()</code> — O(1) (хеш-таблица внутри), тогда как <code>array.includes()</code> — O(n) (линейный перебор); на списке из тысяч элементов разница становится заметной. <code>WeakMap</code> не даёт <code>.size</code> и не перечисляем нарочно — эти операции потребовали бы движку «заморозить» состояние сборщика мусора на момент вызова, что противоречит самой идее «слабых» ссылок.</div>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Попробуйте использовать примитив (строку) как ключ <code>WeakMap</code>: <code>weakMap.set('строка', 1)</code>. Что произойдёт и почему — вспомните, что значит «слабая ссылка» применительно к значению, которое не может быть собрано сборщиком мусора (примитивы не удаляются GC так же, как объекты).</li><li>Перепишите пример с <code>viewCounts</code> так, чтобы вместо <code>Map</code> с объектом-ключом использовался обычный объект с <code>ticket.id</code> в качестве ключа. В каком сценарии это решение сломается (два разных объекта с одинаковым id)?</li></ul></div>
+</div></div>
+<div class="next-box"><span class="tag">ИТОГ СЕССИИ 4 → ПЕРЕД СЕССИЕЙ 5</span><ul>
+<li>✅ <code>git commit -am "session 4: prototypes, class, collections"</code></li>
+<li>📝 Ответы 4.1–4.3. Это конец «чистого языка» — сессии 1-4. Дальше — рантайм: асинхронность, браузер, DOM.</li>
+<li>📖 Почитать: <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/EventLoop" target="_blank">MDN: Event Loop</a> — сессия 5 начинается с «угадай порядок вывода».</li>
+</ul></div>
+<div class="session-banner" id="session-5">Сессия <a href="#session-5" style="color:#fff;text-decoration:none">5</a> — Event Loop, Promises, fetch, debounce/throttle <span>~3 часа</span></div>
+<div class="step" id="step-5-1"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-5-1"></label><span class="num">Шаг 5.1</span>Event Loop: угадать порядок вывода, потом проверить<a class="anchor" href="#step-5-1">#</a></span><div class="step-body">
+<p>«Угадай порядок вывода» — классика собеседований. Сначала угадываем на бумаге, потом проверяем.</p><pre><code>// src/playground/11_event_loop.js
+
+console.log('A');
+
+setTimeout(() =&gt; console.log('B'), 0);
+
+Promise.resolve().then(() =&gt; {
+  console.log('C');
+  Promise.resolve().then(() =&gt; console.log('D'));
+});
+
+Promise.resolve().then(() =&gt; console.log('E'));
+
+setTimeout(() =&gt; console.log('F'), 0);
+
+console.log('G');
+
+queueMicrotask(() =&gt; console.log('H'));       // ещё один способ поставить microtask напрямую, без Promise
+
+console.log('I');</code></pre>
+<pre><code>docker compose exec dev node src/playground/11_event_loop.js</code></pre>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><pre>A
+G
+I
+C
+E
+H
+D
+B
+F</pre><p>Прежде чем запускать — остановитесь и напишите свой прогноз порядка на бумаге. Сверьте. Если не совпало — это нормально на первый раз; разберитесь, на каком именно шаге ваша модель разошлась с движком, прежде чем читать «зачем» ниже.</p></div>
+<div class="why"><b>Зачем:</b> Три волны: (1) весь синхронный код — <code>A, G, I</code> — выполняется первым, без остановок. (2) Микротаски опустошаются ПОЛНОСТЬЮ, включая новые, добавленные по ходу их же обработки: <code>C</code> и <code>E</code> были в очереди изначально, но <code>C</code> добавляет ещё один микротаск (<code>D</code>) — он всё равно выполнится раньше, чем движок перейдёт к макротаскам, поэтому порядок <code>C, E, H, D</code>, а не <code>C, D, E, H</code> (Promise-микротаски были поставлены в очередь ДО <code>queueMicrotask</code>, а порядок внутри очереди FIFO — <code>D</code> встал в очередь позже <code>H</code>, поэтому <code>H</code> раньше). (3) Макротаски — по одному, в порядке постановки: <code>B</code>, потом <code>F</code>.</div>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Поменяйте местами два <code>setTimeout</code> с <code>Promise.resolve().then()</code>. Изменится ли итоговый порядок вывода? Почему порядок ПОСТАНОВКИ в очередь синхронного кода не всегда совпадает с порядком, в котором асинхронный код фактически регистрируется в очередях?</li><li>Добавьте <code>async function</code> с двумя <code>await</code> внутри и вызовом <code>console.log</code> между ними. В какой момент относительно A-I встроится первый лог внутри этой функции? (Подсказка: код до первого <code>await</code> выполняется СИНХРОННО в момент вызова.)</li></ul></div>
+</div></div>
+<div class="step" id="step-5-2"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-5-2"></label><span class="num">Шаг 5.2</span>fetch + AbortController: отмена устаревших запросов при поиске<a class="anchor" href="#step-5-2">#</a></span><div class="step-body">
+<p>Активируем json-server, пишем fetch-обёртку с обязательной проверкой <code>response.ok</code> и AbortController для отмены при повторном поиске.</p><pre><code># db.json (в корне репозитория)
+{
+  "tickets": [
+    { "id": 1, "title": "VPN не работает", "status": "open", "priority": "high" },
+    { "id": 2, "title": "Принтер сломан", "status": "closed", "priority": "low" },
+    { "id": 3, "title": "Ошибка 500 на сайте", "status": "open", "priority": "high" },
+    { "id": 4, "title": "Нужен доступ к Jira", "status": "open", "priority": "low" }
+  ]
+}</code></pre>
+<pre><code>docker compose --profile api up -d
+curl -s localhost:3001/tickets | head -c 200; echo</code></pre>
+<pre><code>// src/async/api.js
+const BASE_URL = 'http://localhost:3001';
+
+export async function fetchJSON(path, options = {}) {
+  const response = await fetch(`${BASE_URL}${path}`, options);
+  if (!response.ok) {                                            // ОБЯЗАТЕЛЬНАЯ проверка — fetch не бросает сама на 404/500
+    throw new Error(`HTTP ${response.status} на ${path}`);
+  }
+  return response.json();
+}
+
+export function searchTickets(query, { signal } = {}) {
+  const params = new URLSearchParams({ title_like: query });
+  return fetchJSON(`/tickets?${params}`, { signal });
+}</code></pre>
+<pre><code>// src/async/search-demo.js
+import { searchTickets } from './api.js';
+
+let currentController = null;
+
+async function search(query) {
+  currentController?.abort();                    // отменяем ЛЮБОЙ незавершённый предыдущий запрос
+  currentController = new AbortController();
+  try {
+    const results = await searchTickets(query, { signal: currentController.signal });
+    console.log(`Результаты для "${query}":`, results.map(t =&gt; t.title));
+  } catch (error) {
+    if (error.name === 'AbortError') { console.log(`"${query}" — отменён следующим поиском`); return; }
+    console.error('Ошибка поиска:', error.message);
+  }
+}
+
+// эмулируем быстрый ввод: пользователь печатает "принтер", запросы летят на каждую букву
+await Promise.all(['п', 'пр', 'прин', 'принтер'].map((q, i) =&gt;
+  new Promise(resolve =&gt; setTimeout(() =&gt; search(q).then(resolve), i * 10))    // с небольшой задержкой, как реальный ввод
+));</code></pre>
+<pre><code>docker compose exec dev node src/async/search-demo.js</code></pre>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><pre>"п" — отменён следующим поиском
+"пр" — отменён следующим поиском
+"прин" — отменён следующим поиском
+Результаты для "принтер": [ 'Принтер сломан' ]</pre><p>Только последний запрос («принтер») реально дошёл до ответа — все три предыдущих были отменены до завершения, ровно как задумано.</p></div>
+<div class="why"><b>Зачем:</b> Проверка <code>response.ok</code> — не формальность: без неё запрос на несуществующий эндпоинт (опечатка в пути, сервер лежит и отдаёт кастомную 404-страницу) молча вернул бы «успешный» Promise, а падение случилось бы на непонятной строке внутри <code>response.json()</code>, если тело вообще не JSON. <code>AbortController</code> с одним общим <code>currentController</code> — стандартный паттерн для полей поиска с автодополнением: без него все четыре запроса из примера дошли бы до сервера и КАЖДЫЙ обновил бы UI своим ответом, включая устаревшие — race condition, аналогичная гонке запросов из Vue-лабы, только здесь решена вручную, без Pinia.</div>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Уберите <code>currentController?.abort()</code> и запустите пример снова. Сколько ответов реально придёт и в каком порядке? Что из этого хуже — лишние запросы к серверу или неверный порядок обновления UI?</li><li>Добавьте в <code>fetchJSON</code> таймаут через <code>AbortSignal.timeout(3000)</code> (встроенный статический метод, без ручного <code>setTimeout</code> + <code>controller.abort()</code>). Проверьте на искусственно недоступном порту.</li></ul></div>
+</div></div>
+<div class="step" id="step-5-3"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-5-3"></label><span class="num">Шаг 5.3</span>debounce/throttle с тестами на встроенном node --test + mock.timers<a class="anchor" href="#step-5-3">#</a></span><div class="step-body">
+<p>debounce и throttle — с тестами через встроенный <code>node --test</code> и поддельные таймеры, без единой внешней зависимости.</p><pre><code>// src/async/timing.js
+export function debounce(fn, delay) {
+  let timer = null;
+  return (...args) =&gt; {
+    clearTimeout(timer);
+    timer = setTimeout(() =&gt; fn(...args), delay);
+  };
+}
+
+export function throttle(fn, interval) {
+  let lastCall = 0;
+  let timeoutId = null;
+  return (...args) =&gt; {
+    const now = Date.now();
+    const remaining = interval - (now - lastCall);
+    if (remaining &lt;= 0) {
+      clearTimeout(timeoutId);
+      lastCall = now;
+      fn(...args);
+    } else if (!timeoutId) {                          // догоняющий вызов в конце паузы — иначе последнее событие потеряется
+      timeoutId = setTimeout(() =&gt; { lastCall = Date.now(); timeoutId = null; fn(...args); }, remaining);
+    }
+  };
+}</code></pre>
+<pre><code>// src/__tests__/timing.test.js
+import { test, mock } from 'node:test';
+import assert from 'node:assert/strict';
+import { debounce, throttle } from '../async/timing.js';
+
+test('debounce вызывает fn только один раз после паузы', () =&gt; {
+  mock.timers.enable({ apis: ['setTimeout'] });               // встроенные поддельные таймеры Node — без sinon/jest
+  let calls = 0;
+  const debounced = debounce(() =&gt; calls++, 100);
+
+  debounced(); debounced(); debounced();                        // три быстрых вызова подряд
+  assert.equal(calls, 0);                                          // ещё ничего не вызвано — таймер сброшен трижды
+
+  mock.timers.tick(100);                                            // "промотать" 100мс поддельного времени
+  assert.equal(calls, 1);                                            // сработал ровно один раз
+
+  mock.timers.reset();
+});
+
+test('throttle пропускает вызовы чаще interval, но не теряет последний', () =&gt; {
+  mock.timers.enable({ apis: ['setTimeout', 'Date'] });
+  let calls = [];
+  const throttled = throttle((label) =&gt; calls.push(label), 100);
+
+  throttled('first');                        // проходит сразу
+  mock.timers.tick(30);
+  throttled('second');                       // рано — должен быть отложен как "догоняющий"
+  mock.timers.tick(30);
+  throttled('third');                        // тоже рано, но заменит отложенный вызов
+  mock.timers.tick(100);                        // время прошло — догоняющий вызов срабатывает
+
+  assert.deepEqual(calls, ['first', 'third']);   // second потерян намеренно (throttle схлопывает частые вызовы), third — последний
+  mock.timers.reset();
+});</code></pre>
+<pre><code>docker compose exec dev node --test src/__tests__</code></pre>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><pre>▶ debounce вызывает fn только один раз после паузы
+  ✔ ...
+▶ throttle пропускает вызовы чаще interval, но не теряет последний
+  ✔ ...
+
+tests 2
+pass 2
+fail 0</pre></div>
+<div class="why"><b>Зачем:</b> <code>node:test</code> и <code>mock.timers</code> — часть Node.js с версии 20+, без единой строчки в <code>package.json</code> в качестве зависимости; это финальное подтверждение принципа лабы: даже тестирование временнóй логики (обычно требующее jest/sinon с их поддельными таймерами) делается штатными средствами. <code>mock.timers.tick(ms)</code> «промaтывает» время мгновенно, без реального ожидания — тест выполняется за миллисекунды, хотя логически проверяет поведение на протяжении сотен «виртуальных» миллисекунд.</div>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>В тесте throttle уберите последний <code>mock.timers.tick(100)</code> в конце. Изменится ли результат <code>calls</code>? Что это говорит о том, когда именно срабатывает «догоняющий» вызов?</li><li>Напишите тест на debounce, проверяющий, что если вызвать функцию, подождать 50мс (меньше delay), потом вызвать снова — таймер СБРОСИТСЯ, а не сработает по истечении первых 100мс.</li></ul></div>
+</div></div>
+<div class="next-box"><span class="tag">ИТОГ СЕССИИ 5 → ПЕРЕД СЕССИЕЙ 6</span><ul>
+<li>✅ <code>git commit -am "session 5: event loop, fetch, debounce/throttle"</code></li>
+<li>📝 Ответы 5.1–5.3. Это конец чистого рантайма — сессии 6-8 переходят в браузер.</li>
+<li>📖 Почитать: <a href="https://developer.mozilla.org/ru/docs/Web/API/Document/querySelector" target="_blank">MDN: Document.querySelector()</a>, <a href="https://developer.mozilla.org/ru/docs/Learn/JavaScript/Building_blocks/Events" target="_blank">MDN: Events</a>.</li>
+</ul></div>
+<div class="session-banner" id="session-6">Сессия <a href="#session-6" style="color:#fff;text-decoration:none">6</a> — DOM без фреймворка <span>~3 часа</span></div>
+<div class="step" id="step-6-1"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-6-1"></label><span class="num">Шаг 6.1</span>Свой статический сервер на node:http (без Express, без serve)<a class="anchor" href="#step-6-1">#</a></span><div class="step-body">
+<p>Свой статический сервер на <code>node:http</code>, ~20 строк, полностью «vanilla» — ни Express, ни <code>serve</code>, ни единой npm-зависимости для этой части.</p><pre><code>// src/web/server.js — дан целиком, копируется как есть
+import { createServer } from 'node:http';
+import { readFile } from 'node:fs/promises';
+import { extname, join } from 'node:path';
+
+const ROOT = new URL('.', import.meta.url).pathname;         // папка src/web/
+const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css' };
+
+createServer(async (req, res) =&gt; {
+  let path = req.url === '/' ? '/index.html' : req.url;
+  try {
+    const filePath = join(ROOT, path);
+    const content = await readFile(filePath);
+    res.writeHead(200, { 'Content-Type': TYPES[extname(filePath)] ?? 'application/octet-stream' });
+    res.end(content);
+  } catch {
+    res.writeHead(404); res.end('Not found');
+  }
+}).listen(5500, () =&gt; console.log('web: http://localhost:5500'));</code></pre>
+<pre><code>&lt;!-- src/web/index.html --&gt;
+&lt;!doctype html&gt;
+&lt;html lang="ru"&gt;
+&lt;head&gt;&lt;meta charset="utf-8"&gt;&lt;title&gt;Vanilla Helpdesk&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Тикеты&lt;/h1&gt;
+  &lt;ul id="ticket-list"&gt;&lt;/ul&gt;
+  &lt;script type="module" src="/app/main.js"&gt;&lt;/script&gt;     &lt;!-- ЕДИНСТВЕННЫЙ script-тег; всё остальное — import внутри --&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<pre><code>docker compose --profile web up -d
+docker compose logs web
+open http://localhost:5500          # или curl -s localhost:5500 | head</code></pre>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><p>Пустая страница с заголовком «Тикеты» и пустым списком (main.js ещё не написан). Никакого билд-шага не было — файлы отдаются напрямую с диска.</p></div>
+<div class="why"><b>Зачем:</b> Отдавать статику своим <code>node:http</code>-сервером, а не через <code>npx serve</code> или Vite dev-server — намеренный выбор ради «vanilla» до последней строчки: этот сервер целиком в 20 строк, и вы видите каждую его часть. В реальном проекте так, конечно, никто не делает (Vite/nginx решают это лучше), но цель здесь — увидеть, что за экраном браузера ничего сложного нет: HTTP-запрос, чтение файла, отправка с правильным <code>Content-Type</code>.</div>
+</div></div>
+<div class="step" id="step-6-2"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-6-2"></label><span class="num">Шаг 6.2</span>Рендер списка через DOM API, делегирование событий, PATCH на json-server<a class="anchor" href="#step-6-2">#</a></span><div class="step-body">
+<p>Рендерим список тикетов из json-server через DOM API — без <code>innerHTML +=</code> в цикле, с делегированием клика.</p><pre><code>// src/web/app/api.js
+const BASE_URL = 'http://localhost:3001';
+export async function fetchTickets() {
+  const res = await fetch(`${BASE_URL}/tickets`);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}
+export async function updateTicketStatus(id, status) {
+  const res = await fetch(`${BASE_URL}/tickets/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status }),
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}</code></pre>
+<pre><code>// src/web/app/main.js
+import { fetchTickets, updateTicketStatus } from './api.js';
+
+const list = document.querySelector('#ticket-list');
+
+function createTicketElement(ticket) {
+  const li = document.createElement('li');                     // createElement, НЕ innerHTML — сохраняет обработчики соседей
+  li.className = 'ticket-item';
+  li.dataset.id = ticket.id;                                       // data-атрибут — способ привязать данные к DOM без глобальных переменных
+
+  const title = document.createElement('span');
+  title.textContent = ticket.title;                                 // textContent — безопасно от XSS, в отличие от innerHTML с чужими данными
+
+  const select = document.createElement('select');
+  ['open', 'in_progress', 'closed'].forEach(status =&gt; {
+    const option = document.createElement('option');
+    option.value = status; option.textContent = status;
+    option.selected = status === ticket.status;
+    select.appendChild(option);
+  });
+
+  li.append(title, select);
+  return li;
+}
+
+async function render() {
+  const tickets = await fetchTickets();
+  list.replaceChildren(...tickets.map(createTicketElement));      // replaceChildren — очистить и вставить новые ОДНОЙ операцией
+}
+
+list.addEventListener('change', async (event) =&gt; {                // ДЕЛЕГИРОВАНИЕ: один обработчик на родителе, а не на каждом select
+  if (event.target.tagName !== 'SELECT') return;
+  const li = event.target.closest('.ticket-item');
+  await updateTicketStatus(li.dataset.id, event.target.value);
+  console.log(`Тикет #${li.dataset.id} → ${event.target.value}`);
+});
+
+render();</code></pre>
+<pre><code>docker compose exec dev sh -c "echo restart web"   # или просто обновите страницу — сервер уже раздаёт свежие файлы
+open http://localhost:5500
+# смените статус у любого тикета через select — проверьте в Network, что ушёл PATCH; обновите страницу — изменение сохранилось</code></pre>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><p>Список из четырёх тикетов, у каждого — выпадающий список статуса. Смена статуса отправляет PATCH на json-server и логирует в консоль; после перезагрузки страницы новый статус сохранён — данные реально живут на сервере, не только в памяти вкладки.</p></div>
+<div class="why"><b>Зачем:</b> <code>createElement</code> + <code>append</code> вместо <code>innerHTML += '&lt;li&gt;...&lt;/li&gt;'</code> — единственный безопасный способ вставлять данные, пришедшие с сервера: <code>textContent</code> экранирует их автоматически, тогда как <code>innerHTML</code> выполнил бы любой <code>&lt;script&gt;</code>, оказавшийся в поле <code>title</code> (классическая XSS-уязвимость на пользовательском вводе). <b>Делегирование</b> — один <code>addEventListener('change', ...)</code> на <code>#ticket-list</code> обрабатывает клики по select-ам, которых на момент навешивания обработчика ещё не существовало (они появились позже, при <code>render()</code>) — потому что событие «всплывает» от select к родителю. Без делегирования пришлось бы заново навешивать обработчик на каждый select при каждом <code>render()</code>.</div>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Замените <code>list.replaceChildren(...)</code> на ручную пару <code>list.innerHTML = ''; tickets.forEach(t =&gt; list.appendChild(createTicketElement(t)))</code>. Работает ли так же? Чем <code>replaceChildren</code> удобнее чисто по количеству строк?</li><li>Что произойдёт, если убрать проверку <code>event.target.tagName !== 'SELECT'</code> и просто попытаться прочитать <code>event.target.value</code> у любого клика по списку (например, по <code>span</code> с заголовком)? Как это проявится?</li></ul></div>
+</div></div>
+<div class="next-box"><span class="tag">ИТОГ СЕССИИ 6 → ПЕРЕД СЕССИЕЙ 7</span><ul>
+<li>✅ <code>git commit -am "session 6: dom without framework"</code></li>
+<li>📝 Ответы 6.1–6.2.</li>
+<li>📖 Почитать: <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Proxy" target="_blank">MDN: Proxy</a>, <a href="https://developer.mozilla.org/ru/docs/Web/API/History_API" target="_blank">MDN: History API</a> — сессии 7-8 целиком про это.</li>
+</ul></div>
+<div class="session-banner" id="session-7">Сессия <a href="#session-7" style="color:#fff;text-decoration:none">7</a> — Модули, Storage, собственная реактивность на Proxy <span>~3,5 часа</span></div>
+<div class="step" id="step-7-1"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-7-1"></label><span class="num">Шаг 7.1</span>ESM в браузере без бандлера: import/export, Network-вкладка<a class="anchor" href="#step-7-1">#</a></span><div class="step-body">
+<p>ESM в браузере без единого бандлера — вы уже это делали в сессии 6, не заметив. Здесь — разбор по частям и явное сравнение с CommonJS.</p><pre><code>// src/web/app/constants.mjs — .mjs явно помечает файл как ESM (необязательно при "type": "module" в package.json, но полезно для наглядности)
+export const DEFAULT_STATUS = 'open';
+export const STATUSES = ['open', 'in_progress', 'closed'];
+export default { name: 'ticket-constants' };                 // default export — один на модуль, импортируется без фигурных скобок
+
+// демонстрация в консоли браузера (откройте DevTools на localhost:5500):
+import constants, { DEFAULT_STATUS, STATUSES } from '/app/constants.mjs';
+console.log(constants, DEFAULT_STATUS, STATUSES);
+
+// сравнение с тем, как выглядел бы CommonJS (НЕ работает в браузере напрямую!):
+// const { DEFAULT_STATUS } = require('./constants');    // require не существует в браузере вообще
+// module.exports = { DEFAULT_STATUS };                     // module тоже не существует</code></pre>
+<p>Откройте вкладку Network в DevTools при загрузке страницы — каждый <code>import</code> становится отдельным HTTP-запросом (в отличие от бандлера, который склеил бы всё в один файл). На четырёх модулях разницы не видно; на четырёхстах — вот именно ради этого и появился Vite.</p><div class="why"><b>Зачем:</b> Расширение <code>.js</code> в <code>import './api.js'</code> — не стиль, а обязательное требование браузерного ESM: движок резолвит модули строго по указанному пути, без «угадывания» расширения, как это делает Node для CommonJS. Отсюда и растёт правило NodeNext-модулей, с которым вы столкнулись бы в TypeScript-лабе (там тот же принцип: <code>import type</code> и обязательные расширения).</div>
+</div></div>
+<div class="step" id="step-7-2"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-7-2"></label><span class="num">Шаг 7.2</span>localStorage персистентность фильтров + кросс-вкладочная синхронизация<a class="anchor" href="#step-7-2">#</a></span><div class="step-body">
+<p>Персистентность фильтров через localStorage + событие <code>storage</code> для синхронизации между вкладками.</p><pre><code>// src/web/app/filters.js
+const KEY = 'ticket-filters';
+
+export function loadFilters() {
+  try { return JSON.parse(localStorage.getItem(KEY) ?? '{}'); }
+  catch { return {}; }                                          // повреждённый JSON в localStorage — не редкость, не должно ронять приложение
+}
+
+export function saveFilters(filters) {
+  localStorage.setItem(KEY, JSON.stringify(filters));
+}
+
+export function onFiltersChangedElsewhere(callback) {
+  window.addEventListener('storage', (event) =&gt; {               // событие storage НЕ срабатывает во вкладке, которая сама записала!
+    if (event.key === KEY) callback(JSON.parse(event.newValue ?? '{}'));
+  });
+}</code></pre>
+<pre><code>// проверка в консоли двух ОТКРЫТЫХ ОДНОВРЕМЕННО вкладок localhost:5500:
+// вкладка 1:
+import { saveFilters, onFiltersChangedElsewhere } from '/app/filters.js';
+onFiltersChangedElsewhere(f =&gt; console.log('изменилось в другой вкладке:', f));
+
+// вкладка 2:
+import { saveFilters } from '/app/filters.js';
+saveFilters({ status: 'open' });     // во ВКЛАДКЕ 1 должно появиться "изменилось в другой вкладке: {status: 'open'}"</code></pre>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><p>Вкладка 1 получает уведомление об изменении, сделанном во вкладке 2 — но НЕ получает уведомление о собственных изменениях (это стандартное поведение события <code>storage</code>: оно предназначено именно для кросс-вкладочной синхронизации).</p></div>
+<div class="why"><b>Зачем:</b> <code>event.key === KEY</code> — фильтр, потому что <code>storage</code> срабатывает при ЛЮБОМ изменении ЛЮБОГО ключа localStorage этого origin, включая записи от других частей приложения. Try/catch вокруг <code>JSON.parse</code> — не паранойя: пользователь может вручную отредактировать localStorage через DevTools, расширение браузера может испортить данные, и без защиты одна битая запись уронит загрузку всего приложения при следующем визите.</div>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Почему событие <code>storage</code> не срабатывает в той же вкладке, которая сделала <code>setItem</code>? Придумайте, как всё-таки уведомить ТЕКУЩУЮ вкладку о собственном изменении (подсказка: вызвать колбэк вручную сразу после <code>saveFilters</code>).</li><li>Замените <code>JSON.stringify</code>/<code>parse</code> на <code>structuredClone</code> для сохранения объекта с <code>Date</code> внутри фильтров (например, «показать задачи после даты X»). Сработает ли — localStorage вообще принимает не-строки?</li></ul></div>
+</div></div>
+<div class="step" id="step-7-3"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-7-3"></label><span class="num">Шаг 7.3</span>Своя reactive()/effect(): автотрекинг зависимостей + батчинг через microtask<a class="anchor" href="#step-7-3">#</a></span><div class="step-body">
+<p>Главное блюдо лабы: полноценная мини-версия <code>reactive()</code>/<code>ref()</code> — с автоматическим отслеживанием зависимостей (не вручную указанным <code>onChange</code>, как в разделе 14) и батчингом обновлений.</p><pre><code>// src/web/app/reactive.js
+
+let activeEffect = null;                                  // "какой эффект сейчас выполняется" — глобальная точка привязки
+
+export function effect(fn) {
+  const wrapped = () =&gt; { activeEffect = wrapped; fn(); activeEffect = null; };
+  wrapped.deps = new Set();                                   // на какие поля подписан этот эффект (для будущей отписки)
+  wrapped();                                                    // выполнить сразу — заодно СОБРАТЬ зависимости при первом чтении
+  return wrapped;
+}
+
+const targetMap = new WeakMap();                            // target → (key → Set&lt;effect&gt;) — WeakMap из раздела 8: объект удалён → карта тоже очистится
+
+function track(target, key) {
+  if (!activeEffect) return;                                    // чтение вне effect() — трекать некого
+  let depsMap = targetMap.get(target);
+  if (!depsMap) targetMap.set(target, depsMap = new Map());
+  let dep = depsMap.get(key);
+  if (!dep) depsMap.set(key, dep = new Set());
+  dep.add(activeEffect);
+  activeEffect.deps.add(dep);
+}
+
+// ── батчинг: несколько синхронных изменений → ОДИН перезапуск эффекта ────────
+const pendingEffects = new Set();
+let isFlushing = false;
+
+function trigger(target, key) {
+  const dep = targetMap.get(target)?.get(key);
+  if (!dep) return;
+  dep.forEach(fn =&gt; pendingEffects.add(fn));
+  if (!isFlushing) {
+    isFlushing = true;
+    queueMicrotask(() =&gt; {                                       // microtask (раздел 9!) — все синхронные изменения этого "тика" уже накопились
+      pendingEffects.forEach(fn =&gt; fn());
+      pendingEffects.clear();
+      isFlushing = false;
+    });
+  }
+}
+
+export function reactive(target) {
+  return new Proxy(target, {
+    get(obj, key, receiver) {
+      track(obj, key);
+      const value = Reflect.get(obj, key, receiver);
+      return typeof value === 'object' &amp;&amp; value !== null ? reactive(value) : value;   // ЛЕНИВАЯ глубокая реактивность
+    },
+    set(obj, key, value, receiver) {
+      const old = obj[key];
+      const result = Reflect.set(obj, key, value, receiver);
+      if (old !== value) trigger(obj, key);
+      return result;
+    },
+  });
+}</code></pre>
+<pre><code>// src/web/app/reactive-demo.js — проверка автотрекинга и батчинга
+import { reactive, effect } from './reactive.js';
+
+const state = reactive({ count: 0, name: 'тест' });
+let runs = 0;
+
+effect(() =&gt; {
+  runs++;
+  console.log(`эффект #${runs}: count = ${state.count}`);        // читает ТОЛЬКО count — не подписан на name
+});
+
+console.log('--- меняем name (эффект НЕ должен сработать) ---');
+state.name = 'изменено';
+
+console.log('--- меняем count три раза подряд СИНХРОННО ---');
+state.count++;
+state.count++;
+state.count++;
+
+console.log('--- проверяем через microtask, что было ОДИН перезапуск, не три ---');
+queueMicrotask(() =&gt; console.log('финал: runs =', runs));    // ожидаем runs === 2 (первый — при effect(), второй — один батч для трёх ++)</code></pre>
+<pre><code>docker compose exec dev node src/web/app/reactive-demo.js</code></pre>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><pre>эффект #1: count = 0
+--- меняем name (эффект НЕ должен сработать) ---
+--- меняем count три раза подряд СИНХРОННО ---
+--- проверяем через microtask, что было ОДИН перезапуск, не три ---
+эффект #2: count = 3
+финал: runs = 2</pre></div>
+<div class="why"><b>Зачем:</b> Это ровно три вещи, которых не хватало наивной версии из раздела 14. (1) <b>Автотрекинг</b>: эффект не говорит явно «я слушаю count» — вместо этого <code>track()</code> сама запоминает, что ВНУТРИ выполнения этого эффекта было прочитано поле <code>count</code> у объекта <code>state</code>, потому что чтение произошло через перехватчик <code>get</code>, пока <code>activeEffect</code> указывал на этот эффект. Изменение <code>name</code> не запускает эффект — он его никогда не читал. (2) <b>Батчинг</b>: три синхронных <code>state.count++</code> вызывают <code>trigger()</code> трижды, но реальный перезапуск отложен в <code>queueMicrotask</code> — тот же приём из раздела 9, где microtask гарантированно выполнится ПОСЛЕ всего текущего синхронного кода, но раньше следующего макротаска. (3) <b>Ленивая глубокая реактивность</b>: вложенные объекты оборачиваются в <code>reactive()</code> только в момент чтения (<code>get</code>), а не рекурсивно при создании — иначе большой вложенный объект пришлось бы обходить целиком заранее, даже если 99% его полей никогда не прочитают.</div>
+<details class="deep"><summary>🔬 Под капотом: это буквально алгоритм @vue/reactivity, упрощённый</summary><div class="deep-body">
+
+<p>Настоящий Vue использует практически идентичную структуру: <code>targetMap</code> (WeakMap) → <code>depsMap</code> (Map) → <code>dep</code> (Set эффектов) — те же три уровня вложенности, что и здесь. Отличия реальной реализации: поддержка <code>Array</code>-специфичных операций (<code>length</code>, методы вроде <code>push</code> требуют особой обработки, чтобы не трекать лишнее), <code>ref()</code> для примитивов (обёртка с единственным полем <code>.value</code>, потому что <code>Proxy</code> не может перехватить чтение самого примитива), приоритеты эффектов (computed должны пересчитываться раньше эффектов рендера) и отписка при уничтожении компонента. Ядро — то, что вы только что написали.</p>
+</div></details>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Добавьте второй <code>effect()</code>, читающий <code>state.name</code>. Измените <code>state.count</code> — сработает ли второй эффект? Измените <code>state.name</code> — сработает ли первый?</li><li>Что произойдёт, если убрать проверку <code>if (old !== value)</code> в <code>set</code>-ловушке и присвоить полю то же самое значение, что там уже есть (<code>state.count = state.count</code>)? Лишний перезапуск — баг или просто неоптимальность?</li></ul></div>
+</div></div>
+<div class="next-box"><span class="tag">ИТОГ СЕССИИ 7 → ПЕРЕД СЕССИЕЙ 8</span><ul>
+<li>✅ <code>git commit -am "session 7: modules, storage, reactivity"</code></li>
+<li>📝 Ответы 7.1–7.3. Дальше — финальная сборка: роутер + store на reactive() + рендер.</li>
+<li>📖 Почитать: <a href="https://developer.mozilla.org/ru/docs/Web/API/History/pushState" target="_blank">MDN: History.pushState()</a>.</li>
+</ul></div>
+<div class="session-banner" id="session-8">Сессия <a href="#session-8" style="color:#fff;text-decoration:none">8</a> — Мини-SPA: роутер + store + рендер, тесты, сравнение с Vue <span>~4 часа</span></div>
+<div class="step" id="step-8-1"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-8-1"></label><span class="num">Шаг 8.1</span>Свой роутер: history.pushState, параметры пути, popstate<a class="anchor" href="#step-8-1">#</a></span><div class="step-body">
+<p>Свой роутер на History API — без перезагрузки страницы, без хэшей в URL. Перехватываем клики по ссылкам, слушаем кнопки «назад/вперёд».</p><pre><code>// src/web/app/router.js
+
+const routes = [];                                          // [{ pattern: RegExp, params: [names], handler }]
+
+export function route(path, handler) {
+  const paramNames = [];
+  const pattern = new RegExp('^' + path.replace(/:(\w+)/g, (_, name) =&gt; {
+    paramNames.push(name);
+    return '([^/]+)';                                        // :id → захватывающая группа "всё, кроме /"
+  }) + '$');
+  routes.push({ pattern, paramNames, handler });
+}
+
+function resolve(pathname) {
+  for (const { pattern, paramNames, handler } of routes) {
+    const match = pathname.match(pattern);
+    if (match) {
+      const params = Object.fromEntries(paramNames.map((name, i) =&gt; [name, match[i + 1]]));
+      return { handler, params };
+    }
+  }
+  return null;
+}
+
+function handleLocation() {
+  const found = resolve(location.pathname);
+  if (found) found.handler(found.params);
+  else console.warn('404: нет маршрута для', location.pathname);
+}
+
+export function navigate(path) {
+  history.pushState(null, '', path);                          // меняет URL, БЕЗ перезагрузки страницы
+  handleLocation();                                             // но роутер сам не узнает об этом — вызываем вручную
+}
+
+export function startRouter() {
+  document.addEventListener('click', (event) =&gt; {               // делегирование КЛИКОВ ПО ССЫЛКАМ на уровне всего документа
+    const link = event.target.closest('a[data-link]');           // только ссылки, помеченные data-link — обычные &lt;a&gt; ведут себя как обычно
+    if (!link) return;
+    event.preventDefault();                                       // не даём браузеру делать полную перезагрузку
+    navigate(link.getAttribute('href'));
+  });
+  window.addEventListener('popstate', handleLocation);           // кнопки браузера "назад"/"вперёд"
+  handleLocation();                                                // первая загрузка — обработать текущий URL
+}</code></pre>
+<div class="why"><b>Зачем:</b> <code>history.pushState</code> меняет адресную строку и добавляет запись в историю браузера, но НЕ вызывает никаких событий и не перезагружает страницу — поэтому <code>navigate()</code> обязан сам вызвать <code>handleLocation()</code> сразу после. А вот кнопки «назад»/«вперёд» браузера как раз генерируют событие <code>popstate</code> — на них подписка обязательна, иначе URL поменяется, а контент останется прежним. <code>event.preventDefault()</code> в обработчике клика — без него браузер выполнил бы обычный переход по ссылке с полной перезагрузкой, обнуляя весь JS-стейт (ровно то, чего SPA избегает).</div>
+</div></div>
+<div class="step" id="step-8-2"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-8-2"></label><span class="num">Шаг 8.2</span>Сборка: store на reactive(), views как шаблонные строки, единственный effect() рендера<a class="anchor" href="#step-8-2">#</a></span><div class="step-body">
+<p>Store на нашей же <code>reactive()</code> из сессии 7 — состояние приложения в одном месте, рендер подписан через <code>effect()</code>.</p><pre><code>// src/web/app/store.js
+import { reactive } from './reactive.js';
+import { fetchTickets, updateTicketStatus } from './api.js';
+
+export const store = reactive({
+  tickets: [],
+  currentView: 'list',           // 'list' | 'detail'
+  currentTicketId: null,
+  loading: false,
+  error: null,
+});
+
+export async function loadTickets() {
+  store.loading = true; store.error = null;
+  try { store.tickets = await fetchTickets(); }
+  catch (e) { store.error = e.message; }
+  finally { store.loading = false; }
+}
+
+export async function changeStatus(id, status) {
+  const before = store.tickets.find(t =&gt; String(t.id) === String(id))?.status;
+  const ticket = store.tickets.find(t =&gt; String(t.id) === String(id));
+  if (ticket) ticket.status = status;                        // оптимистично: reactive() САМА уведомит подписанные effect()
+  try { await updateTicketStatus(id, status); }
+  catch (e) { if (ticket) ticket.status = before; store.error = `Не удалось сохранить: ${e.message}`; }   // откат при ошибке
+}
+
+export function showDetail(id) { store.currentView = 'detail'; store.currentTicketId = id; }
+export function showList()     { store.currentView = 'list'; store.currentTicketId = null; }</code></pre>
+<pre><code>// src/web/app/views.js — функции, ВОЗВРАЩАЮЩИЕ HTML-строку; никакого JSX, никакого виртуального DOM
+export function ticketListView(tickets) {
+  if (tickets.length === 0) return '&lt;p&gt;Тикетов нет&lt;/p&gt;';
+  return '&lt;ul&gt;' + tickets.map(t =&gt; `
+    &lt;li class="ticket-item" data-id="${t.id}"&gt;
+      &lt;a href="/tickets/${t.id}" data-link&gt;${escapeHtml(t.title)}&lt;/a&gt;
+      &lt;select data-id="${t.id}"&gt;
+        ${['open', 'in_progress', 'closed'].map(s =&gt; `&lt;option value="${s}" ${s === t.status ? 'selected' : ''}&gt;${s}&lt;/option&gt;`).join('')}
+      &lt;/select&gt;
+    &lt;/li&gt;`).join('') + '&lt;/ul&gt;';
+}
+
+export function ticketDetailView(ticket) {
+  if (!ticket) return '&lt;p&gt;Тикет не найден&lt;/p&gt;';
+  return `
+    &lt;a href="/" data-link&gt;← назад к списку&lt;/a&gt;
+    &lt;h2&gt;${escapeHtml(ticket.title)}&lt;/h2&gt;
+    &lt;p&gt;Статус: ${ticket.status} · Приоритет: ${ticket.priority}&lt;/p&gt;`;
+}
+
+function escapeHtml(str) {                                    // ОБЯЗАТЕЛЬНО при вставке пользовательских данных в шаблонную строку —
+  const div = document.createElement('div');                    // innerHTML НЕ экранирует автоматически, в отличие от textContent
+  div.textContent = str;
+  return div.innerHTML;
+}</code></pre>
+<pre><code>// src/web/app/main.js
+import { effect } from './reactive.js';
+import { store, loadTickets, changeStatus, showDetail, showList } from './store.js';
+import { ticketListView, ticketDetailView } from './views.js';
+import { route, startRouter } from './router.js';
+
+const app = document.querySelector('#app');
+
+route('/', () =&gt; showList());
+route('/tickets/:id', ({ id }) =&gt; showDetail(id));
+
+effect(() =&gt; {                                                 // ЕДИНСТВЕННЫЙ эффект рендера — реагирует на ЛЮБОЕ прочитанное поле store
+  if (store.loading) { app.innerHTML = '&lt;p&gt;Загрузка…&lt;/p&gt;'; return; }
+  if (store.error)   { app.innerHTML = `&lt;p class="error"&gt;${store.error}&lt;/p&gt;`; }
+
+  if (store.currentView === 'list') {
+    app.innerHTML = (store.error ? app.innerHTML : '') + ticketListView(store.tickets);
+  } else {
+    const ticket = store.tickets.find(t =&gt; String(t.id) === String(store.currentTicketId));
+    app.innerHTML = ticketDetailView(ticket);
+  }
+});
+
+app.addEventListener('change', (event) =&gt; {                     // делегирование, как в сессии 6 — работает даже после innerHTML-перезаписи
+  if (event.target.tagName !== 'SELECT') return;
+  changeStatus(event.target.dataset.id, event.target.value);
+});
+
+startRouter();
+loadTickets();</code></pre>
+<pre><code>&lt;!-- src/web/index.html — обновить --&gt;
+&lt;body&gt;
+  &lt;h1&gt;Vanilla Helpdesk&lt;/h1&gt;
+  &lt;div id="app"&gt;&lt;/div&gt;
+  &lt;script type="module" src="/app/main.js"&gt;&lt;/script&gt;
+&lt;/body&gt;</code></pre>
+<pre><code>docker compose --profile api --profile web up -d
+open http://localhost:5500
+# кликните по тикету — URL меняется на /tickets/1 БЕЗ перезагрузки; кнопка "назад" браузера возвращает к списку;
+# смените статус в списке — сохранится через PATCH; сделайте это на детальной странице тикета через F12 → Console: changeStatus нужно экспортировать глобально или тестировать из списка</code></pre>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><p>Клик по названию тикета переводит на <code>/tickets/N</code> без перезагрузки страницы (проверьте в Network — ни одного полного запроса документа), «назад» браузера работает штатно. Смена статуса в списке сохраняется на сервере и переживает обновление страницы. Весь рендер — это ОДИН <code>effect()</code>, который сам перезапускается при изменении <i>любого</i> прочитанного поля store, без единой ручной строки «обнови DOM здесь».</p></div>
+<div class="why"><b>Зачем:</b> Три вещи сошлись в одном месте. <b>Роутер</b> из 8.1 меняет только <code>store.currentView</code>/<code>currentTicketId</code> через <code>showDetail</code>/<code>showList</code> — сам роутер ничего не знает про DOM. <b>Store</b> — тонкий слой поверх <code>reactive()</code>: экшены (<code>loadTickets</code>, <code>changeStatus</code>) просто присваивают поля, оптимистичное обновление с откатом — та же схема, что в Vue-лабе, только без Pinia. <b>Единственный <code>effect()</code></b> читает store целиком и перерисовывает всё через <code>innerHTML</code> — упрощение по сравнению с Vue (который перерисовывает только изменившиеся узлы через virtual DOM), и именно эта разница станет темой финального сравнения.</div>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Почему <code>escapeHtml</code> нужна именно здесь, а не была нужна в сессии 6 с <code>createElement</code>/<code>textContent</code>? Что изменилось в способе вставки данных в DOM?</li><li>Откройте DevTools → Elements при смене статуса тикета. Что происходит с остальными элементами списка (не тем, что менялся) — они физически пересоздаются в DOM или остаются теми же узлами? Сравните с тем, как вёл бы себя `v-for` с `:key` в Vue.</li></ul></div>
+</div></div>
+<div class="step" id="step-8-3"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-8-3"></label><span class="num">Шаг 8.3</span>Тесты: reactive() (автотрекинг, батчинг) и store (откат при ошибке) на node --test<a class="anchor" href="#step-8-3">#</a></span><div class="step-body">
+<p>Тесты на чистую логику (без DOM, без сети) через <code>node --test</code> — store и reactive проверяются как обычные функции.</p><pre><code>// src/__tests__/reactive.test.js
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { reactive, effect } from '../web/app/reactive.js';
+
+test('effect перезапускается при изменении прочитанного поля', async () =&gt; {
+  const state = reactive({ count: 0 });
+  const seen = [];
+  effect(() =&gt; seen.push(state.count));
+
+  state.count = 1;
+  await new Promise(r =&gt; queueMicrotask(r));       // дождаться батча (раздел 7.3 — trigger откладывает через microtask)
+
+  assert.deepEqual(seen, [0, 1]);
+});
+
+test('effect НЕ перезапускается при изменении НЕпрочитанного поля', async () =&gt; {
+  const state = reactive({ a: 1, b: 1 });
+  let runs = 0;
+  effect(() =&gt; { state.a; runs++; });               // читает ТОЛЬКО a
+
+  state.b = 999;
+  await new Promise(r =&gt; queueMicrotask(r));
+
+  assert.equal(runs, 1);                              // не выросло — b не отслеживается этим эффектом
+});
+
+test('три синхронных изменения — один перезапуск (батчинг)', async () =&gt; {
+  const state = reactive({ n: 0 });
+  let runs = 0;
+  effect(() =&gt; { state.n; runs++; });
+
+  state.n = 1; state.n = 2; state.n = 3;
+  await new Promise(r =&gt; queueMicrotask(r));
+
+  assert.equal(runs, 2);                               // 1 — начальный запуск, 2 — один батч на три изменения
+});</code></pre>
+<pre><code>// src/__tests__/store.test.js — store с ПОДМЕНЁННЫМ api.js (без реального fetch)
+import { test, mock } from 'node:test';
+import assert from 'node:assert/strict';
+
+test('changeStatus откатывает при ошибке сервера', async (t) =&gt; {
+  const apiModule = await import('../web/app/api.js');
+  t.mock.method(apiModule, 'updateTicketStatus', async () =&gt; { throw new Error('503'); });   // node:test встроенный мок модуля
+
+  const { store, changeStatus } = await import('../web/app/store.js');
+  store.tickets = [{ id: 1, status: 'open' }];
+
+  await changeStatus(1, 'closed');
+
+  assert.equal(store.tickets[0].status, 'open');       // откатилось обратно после неудачного PATCH
+  assert.match(store.error, /Не удалось сохранить/);
+});</code></pre>
+<pre><code>docker compose exec dev node --test src/__tests__</code></pre>
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><pre>▶ reactive.test.js
+  ✔ effect перезапускается при изменении прочитанного поля
+  ✔ effect НЕ перезапускается при изменении НЕпрочитанного поля
+  ✔ три синхронных изменения — один перезапуск (батчинг)
+▶ store.test.js
+  ✔ changeStatus откатывает при ошибке сервера
+
+tests 4
+pass 4
+fail 0</pre></div>
+<div class="why"><b>Зачем:</b> <code>t.mock.method()</code> — встроенный в <code>node:test</code> механизм подмены метода модуля, аналог <code>vi.mock</code> из Vitest, но без единой внешней зависимости. Тесты на <code>reactive()</code> проверяют именно то, что было «под капотом» в 7.3: автотрекинг (второй тест) и батчинг (третий) — теперь как формальная гарантия, а не только наблюдение в консоли. Store тестируется без браузера и без сети — то же разделение слоёв, что в Vue-лабе (компонент/store/api), только на чистом JS.</div>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Напишите тест на <code>loadTickets()</code>, подменяющий <code>fetchTickets</code> так, чтобы вернуть заранее заданный массив, и проверяющий, что <code>store.loading</code> становится <code>true</code>, а затем <code>false</code>.</li><li>Почему тесты на reactive используют <code>await new Promise(r =&gt; queueMicrotask(r))</code>, а не просто синхронную проверку сразу после <code>state.count = 1</code>? Свяжите ответ с разделом 9 и 7.3.</li></ul></div>
+</div></div>
+<div class="step" id="step-8-4"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-8-4"></label><span class="num">Шаг 8.4</span>Финал: карта проекта и таблица «что Vue делает вместо вас»<a class="anchor" href="#step-8-4">#</a></span><div class="step-body">
+<p>Финал: карта проекта и таблица «что Vue делает вместо вас» — построчно, без абстрактных «удобнее».</p><pre>js-lab/src/
+├── playground/        01-11: чистый язык и рантайм в Node, без DOM (сессии 1-5)
+├── async/              timing.js (debounce/throttle), api.js (fetch-обёртка)
+├── web/
+│   ├── server.js        свой node:http сервер, 20 строк, без зависимостей
+│   ├── index.html        один &lt;script type="module"&gt;
+│   └── app/
+│       ├── reactive.js    reactive()/effect(): Proxy + WeakMap + автотрекинг + батчинг через microtask
+│       ├── router.js       history.pushState + popstate + делегирование кликов по [data-link]
+│       ├── store.js         состояние приложения на reactive(), экшены с оптимистичным обновлением
+│       ├── views.js         функции → HTML-строка, escapeHtml вручную
+│       ├── api.js           fetch к json-server
+│       └── main.js          склейка: route() + effect(рендер) + делегирование change
+└── __tests__/           node --test: timing, reactive, store — 7 тестов, ноль внешних зависимостей</pre>
+<table>
+<tr><th>Что делает Vue</th><th>Что вы написали руками</th><th>Строк у вас</th><th>Чего не хватает вашей версии</th></tr>
+<tr><td><code>reactive()</code> / <code>ref()</code></td><td><code>reactive.js</code>: Proxy + track/trigger</td><td>~40</td><td>ref() для примитивов, спец-обработка массивов (push/length), приоритеты computed vs watch</td></tr>
+<tr><td>Компонент с шаблоном</td><td><code>views.js</code>: функция → строка HTML</td><td>~20</td><td>переиспользуемость с props/emits, автоматическое экранирование (у Vue — всегда, у вас — вручную escapeHtml)</td></tr>
+<tr><td>Диффинг DOM (перерисовать только изменившееся)</td><td>нет — <code>innerHTML =</code> целиком при любом изменении</td><td>0 (сознательно не делали)</td><td>ВСЁ: сохранение фокуса инпута, скролла, состояния несвязанных элементов при ререндере — то, ради чего вообще существует virtual DOM</td></tr>
+<tr><td>Vue Router</td><td><code>router.js</code>: pushState + простой pattern-matching</td><td>~35</td><td>вложенные маршруты, guards, lazy loading, scroll behavior, query-параметры отдельно от path</td></tr>
+<tr><td>Pinia store</td><td><code>store.js</code>: reactive-объект + функции-экшены</td><td>~20</td><td>Devtools-интеграция, computed-геттеры с кэшированием, персистентность из коробки</td></tr>
+<tr><td>Reactivity Transform / SFC компиляция</td><td>нет — обычные .js файлы</td><td>0</td><td>синтаксический сахар <code>&lt;script setup&gt;</code>, автоматический unwrap ref в шаблоне, HMR</td></tr>
+</table>
+<div class="why"><b>Зачем:</b> Разница не в том, что Vue «умнее» — реактивность у вас работает по тому же алгоритму. Разница в объёме РЕШЁННЫХ КРАЕВЫХ СЛУЧАЕВ: полный <code>@vue/reactivity</code> — несколько тысяч строк, покрывающих массивы, коллекции, отписки, приоритеты; ваш роутер в 35 строк не умеет ничего, кроме простейшего сопоставления пути — ни query-параметров, ни вложенности. Самое дорогое, чего у вас нет вообще — диффинг DOM: <code>innerHTML = </code> при каждом изменении сбрасывает фокус на инпуте, скролл, состояние незакрытого dropdown. Это не «недоделка» — это ЦЕНА простоты, и теперь вы видите её конкретно, а не абстрактно.</div>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Найдите в собственном коде (<code>main.js</code>) место, где ре-рендер списка тикетов сбросит состояние, если бы, скажем, у одного из <code>&lt;li&gt;</code> был раскрытый <code>&lt;details&gt;</code>. Опишите словами, что увидит пользователь.</li><li>Пройдите по всем 8 сессиям и назовите три концепции, которые, как вы теперь понимаете, Vue использовал у вас под носом, а вы этого не замечали, пока не написали руками.</li></ul></div>
+</div></div>
+<div class="next-box"><span class="tag">ИТОГ СЕССИИ 8</span><ul>
+<li>✅ <code>git commit -am "session 8: mini-spa, tests, vue comparison"</code></li>
+<li>📝 Ответы 8.1–8.4. Теперь разделы 19 — письменно, как финальная проверка.</li>
+</ul></div>
+
+<h2 id="sec-17"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-17"></label>17. Чек-лист: концепция ↔ где она в коде <a class="anchor" href="#sec-17">#</a></h2>
+
+<table>
+<tr><th>Концепция</th><th>Где в коде</th><th>Одна фраза</th></tr>
+<tr><td>var/let/const, function vs block scope</td><td>1.2-1.3: баг с var в цикле, три фикса</td><td>область видимости — не абстракция, а конкретная строка кода</td></tr>
+<tr><td>Hoisting, TDZ</td><td>1.3: пять экспериментов с ошибками</td><td>var поднимается со значением, let/const — только по имени</td></tr>
+<tr><td>== vs ===, coercion</td><td>2.1: пять результатов таблицы == живьём</td><td>== это алгоритм приведения, не «мягкое» сравнение</td></tr>
+<tr><td>Falsy-ловушка</td><td>2.1: describeQty(0)</td><td>if (x) не отличает «нет данных» от «данные это 0»</td></tr>
+<tr><td>Деструктуризация, spread/rest</td><td>2.2, 4.1 (теория)</td><td>spread разворачивает, rest собирает</td></tr>
+<tr><td>Методы массивов: map/filter/reduce/find/some/every</td><td>2.2: рефакторинг циклов</td><td>функциональный стиль — именованное намерение, не просто короче</td></tr>
+<tr><td>this: 4 способа вызова + стрелочные</td><td>3.1: баг с потерянным this, 4 фикса</td><td>this определяется КАК вызвали, кроме стрелочных функций</td></tr>
+<tr><td>call/apply/bind</td><td>3.1, раздел 5 (теория)</td><td>явное управление контекстом функции</td></tr>
+<tr><td>Замыкания: каррирование, мемоизация</td><td>3.2: измеримая разница до/после кэша</td><td>функция помнит область, где была создана</td></tr>
+<tr><td>Приватность: module pattern vs #private</td><td>3.3: createAccount vs class Account бок о бок</td><td>замыкание — физическая недоступность, не соглашение</td></tr>
+<tr><td>Прототипы, Object.create</td><td>4.1: цепочка вручную</td><td>объект ищет поле у своего прототипа, если не находит у себя</td></tr>
+<tr><td>class как сахар над прототипами</td><td>4.1: доказательство через getPrototypeOf</td><td>class — не новый механизм, а синтаксис</td></tr>
+<tr><td>#private, static, геттеры/сеттеры, extends/super</td><td>4.2: class Ticket → UrgentTicket</td><td>сеттер — единственная дверь для изменения с валидацией</td></tr>
+<tr><td>Map/Set/WeakMap</td><td>4.3: счётчик просмотров по ссылке на объект</td><td>Map допускает любой ключ; WeakMap не мешает сборщику мусора</td></tr>
+<tr><td>Event Loop: call stack, micro/macrotask</td><td>5.1: угадай порядок вывода</td><td>микротаски опустошаются полностью перед каждым макротаском</td></tr>
+<tr><td>Promise, async/await, комбинаторы</td><td>разделы 10 (теория), 5.2 (fetch)</td><td>await — пауза функции, не блокировка потока</td></tr>
+<tr><td>fetch, response.ok, AbortController</td><td>5.2: отмена устаревших запросов при поиске</td><td>fetch не бросает на 404 — проверка ok обязательна вручную</td></tr>
+<tr><td>debounce/throttle</td><td>5.3: реализация + тесты на node --test</td><td>подождать тишины vs не чаще раза в N мс</td></tr>
+<tr><td>DOM: createElement, делегирование</td><td>6.2: рендер списка тикетов</td><td>textContent безопасен, innerHTML — риск XSS на чужих данных</td></tr>
+<tr><td>ESM vs CommonJS vs бандлер</td><td>7.1: import/export в браузере без Vite</td><td>браузер умеет модули сам; бандлер добавляет удобства поверх</td></tr>
+<tr><td>localStorage, structuredClone</td><td>7.2: персистентность фильтров, кросс-вкладочная синхронизация</td><td>Storage хранит только строки; событие storage не видит свою же вкладку</td></tr>
+<tr><td>Proxy, WeakMap, автотрекинг, батчинг</td><td>7.3: своя reactive()/effect()</td><td>то, что Vue делает у вас под носом — теперь написано руками</td></tr>
+<tr><td>history.pushState, popstate</td><td>8.1: свой роутер</td><td>pushState меняет URL молча; popstate — только для кнопок браузера</td></tr>
+<tr><td>Store на reactive(), оптимистичное обновление</td><td>8.2: store.js</td><td>тот же паттерн, что Pinia в Vue-лабе, без библиотеки</td></tr>
+<tr><td>node:test, mock.timers, mock.method</td><td>5.3, 8.3</td><td>тестирование без внешнего фреймворка</td></tr>
+<tr><td>Сравнение vanilla vs Vue</td><td>8.4</td><td>разница не в алгоритме, а в объёме решённых краевых случаев</td></tr>
+</table>
+
+<h2 id="sec-18"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-18"></label>18. Глоссарий <a class="anchor" href="#sec-18">#</a></h2>
+<div class="glossary-item" id="g-0"><b>Hoisting</b> — поднятие объявлений переменных и функций в начало области видимости на этапе, предшествующем выполнению.</div>
+<div class="glossary-item" id="g-1"><b>TDZ (Temporal Dead Zone)</b> — промежуток между началом блока и объявлением let/const, где переменная зарегистрирована, но недоступна.</div>
+<div class="glossary-item" id="g-2"><b>Function scope / block scope</b> — область видимости, ограниченная функцией (var) или блоком { } (let/const).</div>
+<div class="glossary-item" id="g-3"><b>Coercion (приведение типов)</b> — автоматическое преобразование значения к другому типу при операции (например, в ==).</div>
+<div class="glossary-item" id="g-4"><b>Truthy / falsy</b> — какое булево значение получит значение при неявном приведении к boolean; ложны ровно 8 значений.</div>
+<div class="glossary-item" id="g-5"><b>this</b> — ссылка на контекст вызова функции; определяется способом вызова, кроме стрелочных функций (лексический this).</div>
+<div class="glossary-item" id="g-6"><b>call / apply / bind</b> — явное управление this: call/apply — вызов с заданным this, bind — новая функция с намертво зафиксированным this.</div>
+<div class="glossary-item" id="g-7"><b>Замыкание (closure)</b> — функция, сохраняющая доступ к переменным области, где была создана, даже после завершения этой области.</div>
+<div class="glossary-item" id="g-8"><b>Каррирование</b> — преобразование функции от нескольких аргументов в цепочку функций от одного аргумента.</div>
+<div class="glossary-item" id="g-9"><b>Мемоизация</b> — кэширование результата функции по аргументам вызова.</div>
+<div class="glossary-item" id="g-10"><b>Module pattern</b> — приватность через замыкание — единственный способ инкапсуляции в JS до появления #private.</div>
+<div class="glossary-item" id="g-11"><b>Прототип</b> — объект, к которому обращается движок при поиске отсутствующего у объекта поля.</div>
+<div class="glossary-item" id="g-12"><b>Object.create(proto)</b> — создать объект с явно заданным прототипом, без class и new.</div>
+<div class="glossary-item" id="g-13"><b>class</b> — синтаксический сахар над прототипным наследованием; сам является функцией.</div>
+<div class="glossary-item" id="g-14"><b>#private field</b> — приватное поле класса, недоступное вне тела класса на уровне синтаксиса (не соглашения).</div>
+<div class="glossary-item" id="g-15"><b>static</b> — поле или метод, принадлежащий классу целиком, а не отдельному экземпляру.</div>
+<div class="glossary-item" id="g-16"><b>Symbol</b> — примитив, гарантированно уникальное значение; используется как «незасоряющий» ключ объекта.</div>
+<div class="glossary-item" id="g-17"><b>Map / Set</b> — структуры данных: Map — ключ-значение с любым типом ключа; Set — уникальные значения.</div>
+<div class="glossary-item" id="g-18"><b>WeakMap / WeakSet</b> — версии Map/Set со слабыми ссылками на ключи — не мешают сборщику мусора, не перечисляемы.</div>
+<div class="glossary-item" id="g-19"><b>Call stack</b> — стек вызовов — что выполняется прямо сейчас, синхронно.</div>
+<div class="glossary-item" id="g-20"><b>Microtask queue</b> — очередь высокого приоритета (Promise.then, queueMicrotask); опустошается целиком перед каждым macrotask.</div>
+<div class="glossary-item" id="g-21"><b>Macrotask queue</b> — очередь низкого приоритета (setTimeout, I/O, события); обрабатывается по одной задаче за раз.</div>
+<div class="glossary-item" id="g-22"><b>Promise</b> — объект будущего значения с тремя состояниями: pending, fulfilled, rejected.</div>
+<div class="glossary-item" id="g-23"><b>async/await</b> — синтаксический сахар над Promise; await приостанавливает функцию, не поток.</div>
+<div class="glossary-item" id="g-24"><b>AbortController</b> — механизм отмены fetch и других отменяемых операций через AbortSignal.</div>
+<div class="glossary-item" id="g-25"><b>Debounce / throttle</b> — ограничение частоты вызова функции: «подождать тишины» vs «не чаще раза в N мс».</div>
+<div class="glossary-item" id="g-26"><b>Event delegation (делегирование)</b> — один обработчик на родителе вместо многих на потомках, использующий всплытие события.</div>
+<div class="glossary-item" id="g-27"><b>ESM (ES Modules)</b> — стандартный синтаксис import/export, статически резолвимый, работающий в браузере без сборки.</div>
+<div class="glossary-item" id="g-28"><b>CommonJS</b> — модульная система Node.js (require/module.exports), динамически резолвимая.</div>
+<div class="glossary-item" id="g-29"><b>localStorage / sessionStorage</b> — браузерное хранилище строк: постоянное / на время вкладки.</div>
+<div class="glossary-item" id="g-30"><b>structuredClone</b> — встроенная функция глубокого клонирования, сохраняющая Date, Map, Set, циклические ссылки.</div>
+<div class="glossary-item" id="g-31"><b>Proxy</b> — объект-перехватчик операций (чтение/запись/удаление) над другим объектом.</div>
+<div class="glossary-item" id="g-32"><b>Reactive / effect (собственная реализация)</b> — Proxy-based система: чтение регистрирует зависимость, запись вызывает подписанные эффекты.</div>
+<div class="glossary-item" id="g-33"><b>Автотрекинг зависимостей</b> — автоматическое определение, какие поля читает эффект, без явной подписки.</div>
+<div class="glossary-item" id="g-34"><b>Батчинг</b> — объединение нескольких синхронных изменений в один перезапуск эффекта через microtask.</div>
+<div class="glossary-item" id="g-35"><b>history.pushState / popstate</b> — API для смены URL без перезагрузки страницы / событие кнопок навигации браузера.</div>
+<div class="glossary-item" id="g-36"><b>node:test</b> — встроенный в Node.js тестовый раннер, без внешних зависимостей (аналог Vitest/Jest).</div>
+
+<h2 id="sec-19"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-19"></label>19. Вопросы на понимание (и для собеседования) <a class="anchor" href="#sec-19">#</a></h2>
+
+<p>Письменно, со ссылкой на шаг. Многие из этих вопросов — классика фронтенд-собеседований в буквальной формулировке.</p>
+<h3>Переменные и типы</h3>
+<ul>
+<li>Объясните разницу var/let/const тремя пунктами: scope, hoisting, переприсваивание.</li>
+<li>Что такое TDZ и чем ошибка обращения к let-переменной до объявления отличается от обращения к необъявленной переменной?</li>
+<li>Почему <code>[] == false</code> истинно? Распишите цепочку приведений по шагам.</li>
+<li>Приведите пример, где falsy-проверка (<code>if (x)</code>) даёт неверный результат, и как это исправить.</li>
+<li>typeof null возвращает "object" — почему, и это баг или фича?</li>
+</ul>
+<h3>Функции и объекты</h3>
+<ul>
+<li>Опишите все способы вызова функции и что будет this в каждом.</li>
+<li>Чем отличается стрелочная функция от обычной, помимо краткости синтаксиса?</li>
+<li>Что такое замыкание? Приведите пример практического применения, не связанный со счётчиком.</li>
+<li>Докажите, что class — синтаксический сахар над прототипами (как минимум два способа).</li>
+<li>Чем #private отличается от соглашения об именовании через подчёркивание?</li>
+<li>Когда использовать Map вместо обычного объекта? Приведите случай, где Object в принципе не справится.</li>
+</ul>
+<h3>Асинхронность</h3>
+<ul>
+<li>Распишите порядок вывода для кода с смешанными setTimeout, Promise.then и синхронным console.log.</li>
+<li>Почему setTimeout(fn, 0) не выполняется "сразу"?</li>
+<li>Что делает await технически — блокирует поток или нет? Что происходит с остальным кодом в это время?</li>
+<li>В чём разница между Promise.all и Promise.allSettled? Когда какой?</li>
+<li>Почему fetch не бросает исключение на 404 и как правильно это обрабатывать?</li>
+<li>Как отменить fetch-запрос и зачем это может понадобиться?</li>
+</ul>
+<h3>Браузер и модули</h3>
+<ul>
+<li>Что такое делегирование событий и какую проблему оно решает?</li>
+<li>В чём разница между textContent и innerHTML с точки зрения безопасности?</li>
+<li>Чем ESM отличается от CommonJS помимo синтаксиса — статическая vs динамическая природа?</li>
+<li>Что бандлер (Vite/Webpack) добавляет поверх нативных возможностей браузера, а что было бы доступно и без него?</li>
+</ul>
+<h3>Реактивность и архитектура</h3>
+<ul>
+<li>Объясните своими словами, как Proxy может «узнать», что где-то читают его поле, и почему это называется автотрекингом.</li>
+<li>Зачем нужен батчинг обновлений и почему для него используют именно microtask, а не setTimeout?</li>
+<li>Чего не хватает вашей самодельной reactive() до уровня настоящего Vue? Назовите минимум три вещи.</li>
+<li>Почему рендер через innerHTML целиком — не то же самое, что виртуальный DOM? Что теряется?</li>
+</ul>
+<h3>Итог</h3>
+<ul>
+<li>Пройдите по всем восьми сессиям и для каждой назовите одну концепцию, которая до этой лабы казалась «магией» фреймворка, а теперь понятна как обычный код.</li>
+</ul>
+
+<h2 id="sec-20"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-20"></label>20. Что дальше <a class="anchor" href="#sec-20">#</a></h2>
+
+<table>
+<tr><th>Тема</th><th>Что это</th><th>Связь с лабой</th><th>Почитать</th></tr>
+<tr><td>Vue Lab — Helpdesk</td><td>тот же домен (тикеты), но с настоящим фреймворком</td><td>прямое сравнение: reactive() → ref/reactive Vue, ваш роутер → Vue Router, ваш store → Pinia</td><td>Vue_Lab_Helpdesk.html</td></tr>
+<tr><td>TypeScript Lab</td><td>типизация того же рода логики, что вы писали здесь без типов</td><td>общий JS-фундамент — теперь его же с типами</td><td>TypeScript_Lab_Warehouse.html</td></tr>
+<tr><td>Generators и Iterators</td><td>function*, yield, Symbol.iterator своими руками</td><td>продолжение раздела 8.1 (Symbol.iterator упомянут вскользь)</td><td><a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Guide/Iterators_and_generators" target="_blank">MDN: Iterators and generators</a></td></tr>
+<tr><td>Web Components</td><td>нативные переиспользуемые компоненты (customElements, Shadow DOM)</td><td>что было бы, если бы views.js стали настоящими тегами без фреймворка</td><td><a href="https://developer.mozilla.org/ru/docs/Web/API/Web_components" target="_blank">MDN: Web Components</a></td></tr>
+<tr><td>Виртуальный DOM своими руками</td><td>diff-алгоритм между двумя деревьями объектов, минимальные патчи в реальный DOM</td><td>прямое продолжение вопроса из 8.4 «чего не хватает вашему рендеру»</td><td>исходники preact (~300 строк) как учебный пример</td></tr>
+<tr><td>Service Worker, офлайн-режим</td><td>кэширование запросов, работа без сети</td><td>естественное развитие AbortController/fetch из сессии 5</td><td><a href="https://developer.mozilla.org/ru/docs/Web/API/Service_Worker_API" target="_blank">MDN: Service Worker API</a></td></tr>
+<tr><td>Символьные протоколы: Symbol.iterator, Symbol.toPrimitive</td><td>как сделать свой объект совместимым с for...of, spread, unary +</td><td>раздел 8.1 оставил это как «применение», не реализовав</td><td><a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Iteration_protocols" target="_blank">MDN: Iteration protocols</a></td></tr>
+<tr><td>Node.js глубже: streams, Buffer, cluster</td><td>то, что за пределами простого http-сервера из сессии 6</td><td>ваш server.js — 20 строк; production Node — во многом про то, чего в нём нет</td><td><a href="https://nodejs.org/docs/latest/api/stream.html" target="_blank">Node docs: Streams</a></td></tr>
+<tr><td>Performance: профилирование, requestAnimationFrame</td><td>измерение и оптимизация рендера в реальном времени</td><td>innerHTML-рендер из сессии 8 — не самый быстрый способ; когда это важно и как измерить</td><td><a href="https://developer.mozilla.org/ru/docs/Web/API/Window/requestAnimationFrame" target="_blank">MDN: requestAnimationFrame</a></td></tr>
+</table>
+
+</main>
+</div>
+<a class="totop" href="#top">↑ Наверх</a>
+<script>
+(function () {
+  var KEY = 'js-lab-progress', NAVKEY = 'js-lab-nav';
+  var state = {};
+  try { state = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) {}
+  var boxes = document.querySelectorAll('input.done');
+  function apply() {
+    var total = boxes.length, done = 0;
+    boxes.forEach(function (b) {
+      var k = b.dataset.key, on = !!state[k];
+      b.checked = on; if (on) done++;
+      var host = b.closest('.step') || b.closest('h2');
+      if (host) host.classList.toggle('is-done', on);
+      var nav = document.querySelector('.sidebar a[data-key="' + k + '"]');
+      if (nav) nav.classList.toggle('done', on);
+    });
+    document.getElementById('progress-fill').style.width = (total ? done / total * 100 : 0) + '%';
+    document.getElementById('progress-text').textContent = 'Пройдено: ' + done + ' / ' + total;
+  }
+  boxes.forEach(function (b) {
+    b.addEventListener('change', function () {
+      state[b.dataset.key] = b.checked;
+      localStorage.setItem(KEY, JSON.stringify(state));
+      apply();
+    });
+  });
+  document.getElementById('reset-progress').addEventListener('click', function () {
+    if (confirm('Сбросить все отметки?')) { state = {}; localStorage.removeItem(KEY); apply(); }
+  });
+  apply();
+
+  var toggle = document.getElementById('nav-toggle');
+  function setNav(collapsed) {
+    document.body.classList.toggle('nav-collapsed', collapsed);
+    localStorage.setItem(NAVKEY, collapsed ? '1' : '0');
+    toggle.textContent = collapsed ? '☰' : '✕';
+    toggle.title = collapsed ? 'Показать оглавление' : 'Скрыть оглавление';
+  }
+  toggle.addEventListener('click', function () { setNav(!document.body.classList.contains('nav-collapsed')); });
+  setNav(localStorage.getItem(NAVKEY) === '1' || window.innerWidth < 900);
+
+  // клик по чекбоксу в заголовке не должен вести по якорю
+  document.querySelectorAll('.done-label').forEach(function (l) { l.addEventListener('click', function (e) { e.stopPropagation(); }); });
+})();
+</script>
+</body>
+</html>
