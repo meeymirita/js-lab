@@ -176,11 +176,11 @@
 <li><a href="#step-8-4" data-key="step-8-4"><span class="mark"></span>8.4 Финал: карта проекта + сравнение с Vue</a></li>
 </ul>
 </li>
-<li><a href="#sec-17" data-key="sec-17"><span class="mark"></span>17. Чек-лист концепций</a>
+<li><a href="#sec-17" data-key="sec-17"><span class="mark"></span>17. Чек-лист: концепция ↔ где она в коде</a>
 </li>
 <li><a href="#sec-18" data-key="sec-18"><span class="mark"></span>18. Глоссарий</a>
 </li>
-<li><a href="#sec-19" data-key="sec-19"><span class="mark"></span>19. Вопросы для собеседования</a>
+<li><a href="#sec-19" data-key="sec-19"><span class="mark"></span>19. Вопросы на понимание (и для собеседования)</a>
 </li>
 <li><a href="#sec-20" data-key="sec-20"><span class="mark"></span>20. Что дальше</a>
 </li>
@@ -188,9 +188,9 @@
 <main>
 
 <h1>🟡 JS Lab — Vanilla Helpdesk</h1>
-<p class="subtitle">Чистый JavaScript с нуля: от var/let/const до собственной реактивности на Proxy и мини-SPA без фреймворка. Общий фундамент для Vue и TypeScript лаб. Стек: Node.js 22, нативные ES-модули в браузере (без бандлера), json-server для fetch-практики, встроенный node --test для тестов.</p>
+<p class="subtitle">Чистый JavaScript с нуля: от var/let/const до собственной реактивности на Proxy и мини-SPA без фреймворка. Общий фундамент для Vue и TypeScript лаб. Стек: Node 22+ (24 LTS тоже подходит), нативные ES-модули в браузере (без бандлера), json-server для fetch-практики, встроенный node --test для тестов.</p>
 
-<div class="toc"><b>Как устроена лаба.</b> Разделы 1-9 — теория языка и рантайма: от типичных багов без понимания фундамента до event loop, DOM и модулей. Раздел 10 — восемь сессий заданий по нарастанию: язык в Node-песочнице (сессии 1-4) → асинхронность и fetch (сессия 5) → браузер без фреймворка (сессии 6-7) → мини-SPA с собственным роутером, стором на Proxy и сравнением с Vue (сессия 8). Каждый шаг: код → «зачем» → команда → ожидаемый результат → «проверь себя». Разделы 11-14 — чек-лист, глоссарий, вопросы для собеседования, что дальше.
+<div class="toc"><b>Как устроена лаба.</b> Разделы 1-15 — теория языка и рантайма: от типичных багов без понимания фундамента до event loop, DOM и модулей. Раздел 16 — восемь сессий заданий по нарастанию: язык в Node-песочнице (сессии 1-4) → асинхронность и fetch (сессия 5) → браузер без фреймворка (сессии 6-7) → мини-SPA с собственным роутером, стором на Proxy и сравнением с Vue (сессия 8). Каждый шаг: код → «зачем» → команда → ожидаемый результат → «проверь себя». Разделы 17-20 — чек-лист, глоссарий, вопросы для собеседования, что дальше.
 <p class="small">Отдельный репозиторий, ни от чего не зависит. Ни одного фреймворка и ни одного бандлера — принципиально: цель лабы увидеть, что делают Vue/React/бандлеры <i>вместо вас</i>, а не выучить ещё один инструмент. Домен практики (сессия 8) — тикеты, тот же, что в Vue Lab — Helpdesk, специально для прямого сравнения «vanilla vs Vue» в конце; код при этом полностью свой, без единой связи с тем репозиторием.</p></div>
 
 <h2 id="sec-1"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-1"></label>1. Зачем это: баги, которые растут из непонимания фундамента <a class="anchor" href="#sec-1">#</a></h2>
@@ -237,7 +237,7 @@ console.log(a === b);      // false — а почему падает тест "�
 <div class="insight-box"><span class="tag">ГЛАВНАЯ МЫСЛЬ ЛАБЫ</span><p>JavaScript — язык с очень небольшим числом настоящих правил и очень большим числом последствий из них. Все четыре бага выше выводятся из четырёх фактов: «typeof — не единственный способ проверить тип», «var функционально-, а let блочно-скопирован», «this определяется в момент вызова, не объявления», «объекты сравниваются по ссылке». Выучив эти факты один раз строго, вы перестаёте гадать и начинаете предсказывать поведение кода до его запуска — это и есть цель лабы.</p></div>
 <div class="next-box"><span class="tag">ПЕРЕД РАЗДЕЛОМ <a href="#sec-2">2</a></span><ul>
 <li>📖 Пробежаться: <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Guide" target="_blank">MDN: JavaScript Guide</a> — не читать целиком, просто держать открытым как справочник.</li>
-<li>✅ Node.js 22 и Docker; лаба ничего не требует, кроме терминала и браузера.</li>
+<li>✅ Node 22+ (24 LTS тоже подходит) и Docker; лаба ничего не требует, кроме терминала и браузера.</li>
 </ul></div>
 
 <h2 id="sec-2"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-2"></label>2. Переменные и область видимости <a class="anchor" href="#sec-2">#</a></h2>
@@ -337,7 +337,7 @@ String({})       // "[object Object]"  Number(undefined) // NaN Boolean({})   //
 +'42'            // 42  — унарный плюс — короткий Number()</code></pre>
 <details class="deep"><summary>🔬 Под капотом: object → primitive: как объект превращается в строку или число</summary><div class="deep-body">
 
-<p>Когда объект участвует в операции, требующей примитив (<code>String(obj)</code>, <code>obj + ''</code>, <code>obj == 'что-то'</code>), движок вызывает внутренний алгоритм <code>ToPrimitive</code>: сначала пробует <code>Symbol.toPrimitive</code> (если определён), потом <code>valueOf()</code>, потом <code>toString()</code>. Для массива <code>toString()</code> — это <code>join(',')</code>, отсюда <code>String([1,2]) === '1,2'</code>. Для обычного объекта <code>toString()</code> даёт <code>'[object Object]'</code>. Определить своё поведение: <code>const item = { valueOf() { return this.price; } }; item + 10</code> сработает как число.</p>
+<p>Когда объект участвует в операции, требующей примитив (<code>String(obj)</code>, <code>obj + ''</code>, <code>obj == 'что-то'</code>), движок вызывает внутренний алгоритм <code>ToPrimitive</code>: сначала пробует <code>Symbol.toPrimitive</code> (если определён), а если его нет — порядок зависит от подсказки (hint): для <code>String(obj)</code> (hint <code>"string"</code>) сначала <code>toString()</code>, потом <code>valueOf()</code>; для сложения и <code>Number(obj)</code> (hint <code>"number"</code>/<code>"default"</code>) — наоборот, сначала <code>valueOf()</code>, потом <code>toString()</code>. Для массива <code>toString()</code> — это <code>join(',')</code>, отсюда <code>String([1,2]) === '1,2'</code>. Для обычного объекта <code>toString()</code> даёт <code>'[object Object]'</code>. Определить своё поведение: <code>const item = { valueOf() { return this.price; } }; item + 10</code> сработает как число.</p>
 </div></details>
 
 <h2 id="sec-4"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-4"></label>4. Объекты и массивы: деструктуризация, spread/rest, методы <a class="anchor" href="#sec-4">#</a></h2>
@@ -395,7 +395,7 @@ console.log(original.meta.assignee);   // "boris" — ОБА объекта де
   { id: 3, status: 'open', priority: 'medium' },
 ];
 
-const openTitles = tickets.filter(t =&gt; t.status === 'open').map(t =&gt; t.id);        // [1, 3]
+const openIds = tickets.filter(t =&gt; t.status === 'open').map(t =&gt; t.id);            // [1, 3]
 const hasUrgent = tickets.some(t =&gt; t.priority === 'high');                         // true
 const allOpen = tickets.every(t =&gt; t.status === 'open');                            // false
 const byStatus = tickets.reduce((acc, t) =&gt; {                                        // группировка через reduce
@@ -489,7 +489,7 @@ const curriedDiscount = (percent) =&gt; (tax) =&gt; (price) =&gt; price * (1 - p
 
 const withStandardDiscount = curriedDiscount(0.1);      // "зафиксировали" процент скидки — получили функцию от (tax)
 const withStandardTax = withStandardDiscount(0.2);       // зафиксировали налог — получили функцию от (price)
-withStandardTax(100);                                     // 90 — можно переиспользовать withStandardDiscount для разных price</code></pre>
+withStandardTax(100);                                     // 108 — можно переиспользовать withStandardDiscount для разных price</code></pre>
 
 <h3>6.3 Мемоизация</h3>
 <pre><code>function memoize(fn) {
@@ -909,7 +909,7 @@ state.count++;              // console: "state.count изменилось на 1
 <table>
 <tr><th>Компонент</th><th>Выбор</th><th>Зачем</th></tr>
 <tr><td>Язык</td><td>JavaScript (ES2022+), без TypeScript и без сборки</td><td>цель — язык и рантайм, а не типы или инструменты</td></tr>
-<tr><td>Среда выполнения (сессии 1-4)</td><td>Node.js 22, скрипты запускаются напрямую</td><td>язык без браузера — быстрее итерация, не нужен DOM для чистой логики</td></tr>
+<tr><td>Среда выполнения (сессии 1-4)</td><td>Node 22+ (24 LTS тоже подходит), скрипты запускаются напрямую</td><td>язык без браузера — быстрее итерация, не нужен DOM для чистой логики</td></tr>
 <tr><td>Браузер (сессии 6-8)</td><td>нативные ES-модули, <code>&lt;script type="module"&gt;</code></td><td>увидеть, что даёт браузер сам по себе, без Vite</td></tr>
 <tr><td>Статика отдаётся</td><td>свой сервер на <code>node:http</code>, ~15 строк, дан целиком</td><td>ноль внешних зависимостей даже для дев-сервера — до конца «vanilla»</td></tr>
 <tr><td>Мок-API для fetch</td><td>json-server (только <code>db.json</code>, без кода)</td><td>реальный HTTP, ноль отвлечения на бэкенд-логику</td></tr>
@@ -950,7 +950,7 @@ render() перечитывает store, строит HTML через шабло
 <div class="insight-box"><span class="tag">ГЛАВНАЯ МЫСЛЬ ЛАБЫ</span><p>К концу сессии 8 вы соберёте своими руками уменьшенную версию того, что Vue делает за вас: реактивное состояние (Proxy), роутинг без перезагрузки страницы (History API), рендер по изменению состояния (руками, без virtual DOM). Финальная таблица сравнит каждую из трёх частей построчно — не абстрактно «Vue удобнее», а «вот 40 строк, которые Vue написал за вас, и вот что происходит, если хочется, скажем, только перерисовать изменившийся элемент, а не весь список».</p></div>
 <div class="next-box"><span class="tag">ПЕРЕД РАЗДЕЛОМ <a href="#sec-16">16</a></span><ul>
 <li>📖 Держать открытым: <a href="https://developer.mozilla.org/ru/docs/Web/API/Document_Object_Model" target="_blank">MDN: DOM</a>, <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Promise" target="_blank">MDN: Promise</a>.</li>
-<li>✅ Docker, Node 22 (для локальных экспериментов вне контейнера, если удобнее), браузер с открытой консолью разработчика.</li>
+<li>✅ Docker, Node 22+ (24 LTS тоже подходит; для локальных экспериментов вне контейнера, если удобнее), браузер с открытой консолью разработчика.</li>
 </ul></div>
 
 <h2 id="sec-16"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-16"></label>16. Задания: восемь сессий <a class="anchor" href="#sec-16">#</a></h2>
@@ -1115,7 +1115,7 @@ const earlyArrow = () =&gt; 'не сработает';</code></pre>
 <div class="step" id="step-2-1"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-2-1"></label><span class="num">Шаг 2.1</span>Приведение типов, falsy-ловушка, NaN, сравнение объектов — пять экспериментов<a class="anchor" href="#step-2-1">#</a></span><div class="step-body">
 <p>Баг 1 и баг 4 из раздела 1 — воспроизводим оба, потом чиним. Плюс полный прогон таблицы == из раздела 3, чтобы не верить на слово, а увидеть.</p><pre><code>// src/playground/03_coercion.js
 
-console.log('=== пять результатов ==, которые ломают интуицию ===');
+console.log('=== пять результатов, которые ломают интуицию ===');
 console.log('0 == "":', 0 == '');
 console.log('0 == "0":', 0 == '0');
 console.log('null == undefined:', null == undefined);
@@ -1150,7 +1150,7 @@ console.log('a === b:', a === b);                          // false — разн
 console.log('a.qty === b.qty:', a.qty === b.qty);            // true — сравнили содержимое явно
 console.log('JSON.stringify(a) === JSON.stringify(b):', JSON.stringify(a) === JSON.stringify(b));   // true, но хрупко (порядок ключей!)</code></pre>
 <pre><code>docker compose exec dev node src/playground/03_coercion.js</code></pre>
-<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><pre>=== пять результатов ==, которые ломают интуицию ===
+<div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><pre>=== пять результатов, которые ломают интуицию ===
 0 == "": true
 0 == "0": true
 null == undefined: true
@@ -1294,7 +1294,7 @@ console.log('=== thisArg ==='); cart.printItems_thisArg();
 // this при вызове КАК ЧИСТАЯ функция (не через объект) — потеря контекста при передаче метода
 console.log('=== метод, оторванный от объекта ===');
 const loosePrint = cart.printItems_arrow;
-try { loosePrint(); } catch (e) { console.log('упало:', e.constructor.name); }   // this внутри arrow всё ещё смотрит на cart (лексически)! Проверьте printItems_bind так же — там this потеряется.</code></pre>
+try { loosePrint(); } catch (e) { console.log('упало:', e.constructor.name); }   // printItems_arrow — ОБЫЧНЫЙ метод (не стрелочная функция!), при отвязанном вызове его this === undefined, падает раньше, чем выполнение доходит до стрелочной функции внутри. Проверьте printItems_bind так же — там this потеряется так же.</code></pre>
 <pre><code>docker compose exec dev node src/playground/05_this.js</code></pre>
 <div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><pre>=== broken ===
 undefined bolt
@@ -1312,10 +1312,9 @@ undefined nut
 → bolt
 → nut
 === метод, оторванный от объекта ===
-→ bolt
-→ nut</pre></div>
+упало: TypeError</pre></div>
 <div class="why"><b>Зачем:</b> Четыре фикса решают одну и ту же проблему четырьмя разными механизмами: (1) стрелочная функция вообще не имеет собственного <code>this</code> — она смотрит наружу, в момент СОЗДАНИЯ, а не вызова; (2) переменная <code>self</code> — обходной путь до появления стрелочных функций (код на ES5, который до сих пор встречается в старых проектах); (3) <code>.bind(this)</code> — создаёт новую функцию с намертво прибитым контекстом; (4) второй аргумент <code>forEach</code> — малоизвестная, но валидная возможность, которая есть у многих методов массива (<code>map</code>, <code>filter</code>, <code>find</code> тоже принимают <code>thisArg</code>).</div>
-<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Последний эксперимент («метод, оторванный от объекта») сработал для <code>printItems_arrow</code>, потому что стрелочная функция помнит <code>this</code> лексически. Проверьте то же самое для <code>const loose = cart.printItems_bind; loose();</code> — сработает ли, и почему?</li><li>Что выведет <code>console.log(this)</code> на самом верхнем уровне файла (вне какой-либо функции)? Проверьте — и объясните разницу между CommonJS-модулем и ES-модулем (раздел 13 объяснит подробно).</li></ul></div>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Последний эксперимент («метод, оторванный от объекта») упал для <code>printItems_arrow</code> с <code>TypeError</code> — сам метод обычный (не стрелочная функция), и при отвязанном вызове его <code>this</code> — <code>undefined</code>, ошибка происходит ещё до того, как выполнение доходит до стрелочной функции внутри. Проверьте то же самое для <code>const loose = cart.printItems_bind; loose();</code> — сработает ли, и почему?</li><li>Что выведет <code>console.log(this)</code> на самом верхнем уровне файла (вне какой-либо функции)? Проверьте — и объясните разницу между CommonJS-модулем и ES-модулем (раздел 13 объяснит подробно).</li></ul></div>
 </div></div>
 <div class="step" id="step-3-2"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-3-2"></label><span class="num">Шаг 3.2</span>Каррирование и мемоизация: измеримая разница до/после<a class="anchor" href="#step-3-2">#</a></span><div class="step-body">
 <p>Каррирование и мемоизация не как абстрактные примеры из книжки, а с измеримым эффектом: секундомер до/после мемоизации.</p><pre><code>// src/playground/06_closures.js
@@ -1524,7 +1523,7 @@ closed closed
 true true
 сеттер отклонил: недопустимый статус: unknown</pre></div>
 <div class="why"><b>Зачем:</b> <code>UrgentTicket.close()</code> демонстрирует классический паттерн переопределения с расширением: сделать что-то своё, затем явно позвать <code>super.close()</code>, а не дублировать логику родителя. Статический счётчик <code>#totalCreated</code> общий для ВСЕХ экземпляров, включая через наследников (<code>UrgentTicket</code> не имеет своей копии — <code>Ticket.#totalCreated++</code> в конструкторе родителя срабатывает при создании любого потомка тоже). Сеттер <code>status</code> — единственная дверь для изменения приватного поля, и именно в неё встроена валидация: тот же принцип защиты инвариантов, что был в ООП-лабе.</div>
-<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Уберите <code>super(title, 'urgent')</code> из <code>UrgentTicket</code> и попробуйte создать экземпляр. Какую ошибку выдаст движок и на каком именно шаге (парсинг, вызов конструктора, обращение к this)?</li><li>Добавьте в <code>Ticket</code> статический метод <code>static fromJSON(json)</code>, создающий тикет из объекта <code>{ title, priority }</code>. Почему это принято делать статическим методом, а не обычной функцией снаружи класса?</li></ul></div>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Уберите <code>super(title, 'urgent')</code> из <code>UrgentTicket</code> и попробуйте создать экземпляр. Какую ошибку выдаст движок и на каком именно шаге (парсинг, вызов конструктора, обращение к this)?</li><li>Добавьте в <code>Ticket</code> статический метод <code>static fromJSON(json)</code>, создающий тикет из объекта <code>{ title, priority }</code>. Почему это принято делать статическим методом, а не обычной функцией снаружи класса?</li></ul></div>
 </div></div>
 <div class="step" id="step-4-3"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-4-3"></label><span class="num">Шаг 4.3</span>Map/Set/WeakMap на конкретной задаче: счётчик просмотров и приватные данные<a class="anchor" href="#step-4-3">#</a></span><div class="step-body">
 <p>Map/Set/WeakMap на практике — не абстрактно «зачем нужны», а на конкретной задаче, где Object был бы хуже.</p><pre><code>// src/playground/10_collections.js
@@ -1678,17 +1677,20 @@ export function debounce(fn, delay) {
 }
 
 export function throttle(fn, interval) {
-  let lastCall = 0;
+  let lastCall = -Infinity;                            // -Infinity, а не 0: первый вызов обязан пройти сразу, даже если часы (в т.ч. поддельные) стартуют с 0
   let timeoutId = null;
+  let lastArgs = null;
   return (...args) =&gt; {
     const now = Date.now();
+    lastArgs = args;                                    // всегда актуальные аргументы для догоняющего вызова
     const remaining = interval - (now - lastCall);
     if (remaining &lt;= 0) {
       clearTimeout(timeoutId);
+      timeoutId = null;
       lastCall = now;
       fn(...args);
     } else if (!timeoutId) {                          // догоняющий вызов в конце паузы — иначе последнее событие потеряется
-      timeoutId = setTimeout(() =&gt; { lastCall = Date.now(); timeoutId = null; fn(...args); }, remaining);
+      timeoutId = setTimeout(() =&gt; { lastCall = Date.now(); timeoutId = null; fn(...lastArgs); }, remaining);
     }
   };
 }</code></pre>
@@ -1735,7 +1737,7 @@ test('throttle пропускает вызовы чаще interval, но не т
 tests 2
 pass 2
 fail 0</pre></div>
-<div class="why"><b>Зачем:</b> <code>node:test</code> и <code>mock.timers</code> — часть Node.js с версии 20+, без единой строчки в <code>package.json</code> в качестве зависимости; это финальное подтверждение принципа лабы: даже тестирование временнóй логики (обычно требующее jest/sinon с их поддельными таймерами) делается штатными средствами. <code>mock.timers.tick(ms)</code> «промaтывает» время мгновенно, без реального ожидания — тест выполняется за миллисекунды, хотя логически проверяет поведение на протяжении сотен «виртуальных» миллисекунд.</div>
+<div class="why"><b>Зачем:</b> <code>node:test</code> и <code>mock.timers</code> — часть Node.js с версии 20+, без единой строчки в <code>package.json</code> в качестве зависимости; это финальное подтверждение принципа лабы: даже тестирование временнóй логики (обычно требующее jest/sinon с их поддельными таймерами) делается штатными средствами. <code>mock.timers.tick(ms)</code> «проматывает» время мгновенно, без реального ожидания — тест выполняется за миллисекунды, хотя логически проверяет поведение на протяжении сотен «виртуальных» миллисекунд.</div>
 <div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>В тесте throttle уберите последний <code>mock.timers.tick(100)</code> в конце. Изменится ли результат <code>calls</code>? Что это говорит о том, когда именно срабатывает «догоняющий» вызов?</li><li>Напишите тест на debounce, проверяющий, что если вызвать функцию, подождать 50мс (меньше delay), потом вызвать снова — таймер СБРОСИТСЯ, а не сработает по истечении первых 100мс.</li></ul></div>
 </div></div>
 <div class="next-box"><span class="tag">ИТОГ СЕССИИ 5 → ПЕРЕД СЕССИЕЙ 6</span><ul>
@@ -1835,12 +1837,12 @@ list.addEventListener('change', async (event) =&gt; {                // ДЕЛЕ
 });
 
 render();</code></pre>
-<pre><code>docker compose exec dev sh -c "echo restart web"   # или просто обновите страницу — сервер уже раздаёт свежие файлы
+<pre><code># перезапуск не нужен — сервер и так раздаёт свежие файлы, просто обновите страницу
 open http://localhost:5500
 # смените статус у любого тикета через select — проверьте в Network, что ушёл PATCH; обновите страницу — изменение сохранилось</code></pre>
 <div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><p>Список из четырёх тикетов, у каждого — выпадающий список статуса. Смена статуса отправляет PATCH на json-server и логирует в консоль; после перезагрузки страницы новый статус сохранён — данные реально живут на сервере, не только в памяти вкладки.</p></div>
-<div class="why"><b>Зачем:</b> <code>createElement</code> + <code>append</code> вместо <code>innerHTML += '&lt;li&gt;...&lt;/li&gt;'</code> — единственный безопасный способ вставлять данные, пришедшие с сервера: <code>textContent</code> экранирует их автоматически, тогда как <code>innerHTML</code> выполнил бы любой <code>&lt;script&gt;</code>, оказавшийся в поле <code>title</code> (классическая XSS-уязвимость на пользовательском вводе). <b>Делегирование</b> — один <code>addEventListener('change', ...)</code> на <code>#ticket-list</code> обрабатывает клики по select-ам, которых на момент навешивания обработчика ещё не существовало (они появились позже, при <code>render()</code>) — потому что событие «всплывает» от select к родителю. Без делегирования пришлось бы заново навешивать обработчик на каждый select при каждом <code>render()</code>.</div>
-<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Замените <code>list.replaceChildren(...)</code> на ручную пару <code>list.innerHTML = ''; tickets.forEach(t =&gt; list.appendChild(createTicketElement(t)))</code>. Работает ли так же? Чем <code>replaceChildren</code> удобнее чисто по количеству строк?</li><li>Что произойдёт, если убрать проверку <code>event.target.tagName !== 'SELECT'</code> и просто попытаться прочитать <code>event.target.value</code> у любого клика по списку (например, по <code>span</code> с заголовком)? Как это проявится?</li></ul></div>
+<div class="why"><b>Зачем:</b> <code>createElement</code> + <code>append</code> вместо <code>innerHTML += '&lt;li&gt;...&lt;/li&gt;'</code> — единственный безопасный способ вставлять данные, пришедшие с сервера: <code>textContent</code> экранирует их автоматически, тогда как <code>innerHTML</code> выполнил бы любой <code>&lt;script&gt;</code>, оказавшийся в поле <code>title</code> (классическая XSS-уязвимость на пользовательском вводе). <b>Делегирование</b> — один <code>addEventListener('change', ...)</code> на <code>#ticket-list</code> обрабатывает смену значения в select-ах, которых на момент навешивания обработчика ещё не существовало (они появились позже, при <code>render()</code>) — потому что событие «всплывает» от select к родителю. Без делегирования пришлось бы заново навешивать обработчик на каждый select при каждом <code>render()</code>.</div>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Замените <code>list.replaceChildren(...)</code> на ручную пару <code>list.innerHTML = ''; tickets.forEach(t =&gt; list.appendChild(createTicketElement(t)))</code>. Работает ли так же? Чем <code>replaceChildren</code> удобнее чисто по количеству строк?</li><li>Что произойдёт, если убрать проверку <code>event.target.tagName !== 'SELECT'</code> и просто попытаться прочитать <code>event.target.value</code> при любом событии <code>change</code> внутри списка? Как это проявится, если делегирование когда-нибудь повесят и на другое событие (например, <code>click</code>), которое сработает и на <code>span</code> с заголовком?</li></ul></div>
 </div></div>
 <div class="next-box"><span class="tag">ИТОГ СЕССИИ 6 → ПЕРЕД СЕССИЕЙ 7</span><ul>
 <li>✅ <code>git commit -am "session 6: dom without framework"</code></li>
@@ -1883,11 +1885,11 @@ export function onFiltersChangedElsewhere(callback) {
 }</code></pre>
 <pre><code>// проверка в консоли двух ОТКРЫТЫХ ОДНОВРЕМЕННО вкладок localhost:5500:
 // вкладка 1:
-import { saveFilters, onFiltersChangedElsewhere } from '/app/filters.js';
+const { saveFilters, onFiltersChangedElsewhere } = await import('/app/filters.js');   // статический import в консоли не работает — это не модуль
 onFiltersChangedElsewhere(f =&gt; console.log('изменилось в другой вкладке:', f));
 
 // вкладка 2:
-import { saveFilters } from '/app/filters.js';
+const { saveFilters } = await import('/app/filters.js');
 saveFilters({ status: 'open' });     // во ВКЛАДКЕ 1 должно появиться "изменилось в другой вкладке: {status: 'open'}"</code></pre>
 <div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><p>Вкладка 1 получает уведомление об изменении, сделанном во вкладке 2 — но НЕ получает уведомление о собственных изменениях (это стандартное поведение события <code>storage</code>: оно предназначено именно для кросс-вкладочной синхронизации).</p></div>
 <div class="why"><b>Зачем:</b> <code>event.key === KEY</code> — фильтр, потому что <code>storage</code> срабатывает при ЛЮБОМ изменении ЛЮБОГО ключа localStorage этого origin, включая записи от других частей приложения. Try/catch вокруг <code>JSON.parse</code> — не паранойя: пользователь может вручную отредактировать localStorage через DevTools, расширение браузера может испортить данные, и без защиты одна битая запись уронит загрузку всего приложения при следующем визите.</div>
@@ -2059,11 +2061,12 @@ export async function loadTickets() {
   finally { store.loading = false; }
 }
 
-export async function changeStatus(id, status) {
+export async function changeStatus(id, status, deps = {}) {                // deps — точка подмены api для тестов (DI)
+  const update = deps.updateTicketStatus ?? updateTicketStatus;
   const before = store.tickets.find(t =&gt; String(t.id) === String(id))?.status;
   const ticket = store.tickets.find(t =&gt; String(t.id) === String(id));
   if (ticket) ticket.status = status;                        // оптимистично: reactive() САМА уведомит подписанные effect()
-  try { await updateTicketStatus(id, status); }
+  try { await update(id, status); }
   catch (e) { if (ticket) ticket.status = before; store.error = `Не удалось сохранить: ${e.message}`; }   // откат при ошибке
 }
 
@@ -2136,7 +2139,7 @@ open http://localhost:5500
 # смените статус в списке — сохранится через PATCH; сделайте это на детальной странице тикета через F12 → Console: changeStatus нужно экспортировать глобально или тестировать из списка</code></pre>
 <div class="fix-box"><span class="tag">ОЖИДАЕМЫЙ РЕЗУЛЬТАТ</span><p>Клик по названию тикета переводит на <code>/tickets/N</code> без перезагрузки страницы (проверьте в Network — ни одного полного запроса документа), «назад» браузера работает штатно. Смена статуса в списке сохраняется на сервере и переживает обновление страницы. Весь рендер — это ОДИН <code>effect()</code>, который сам перезапускается при изменении <i>любого</i> прочитанного поля store, без единой ручной строки «обнови DOM здесь».</p></div>
 <div class="why"><b>Зачем:</b> Три вещи сошлись в одном месте. <b>Роутер</b> из 8.1 меняет только <code>store.currentView</code>/<code>currentTicketId</code> через <code>showDetail</code>/<code>showList</code> — сам роутер ничего не знает про DOM. <b>Store</b> — тонкий слой поверх <code>reactive()</code>: экшены (<code>loadTickets</code>, <code>changeStatus</code>) просто присваивают поля, оптимистичное обновление с откатом — та же схема, что в Vue-лабе, только без Pinia. <b>Единственный <code>effect()</code></b> читает store целиком и перерисовывает всё через <code>innerHTML</code> — упрощение по сравнению с Vue (который перерисовывает только изменившиеся узлы через virtual DOM), и именно эта разница станет темой финального сравнения.</div>
-<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Почему <code>escapeHtml</code> нужна именно здесь, а не была нужна в сессии 6 с <code>createElement</code>/<code>textContent</code>? Что изменилось в способе вставки данных в DOM?</li><li>Откройте DevTools → Elements при смене статуса тикета. Что происходит с остальными элементами списка (не тем, что менялся) — они физически пересоздаются в DOM или остаются теми же узлами? Сравните с тем, как вёл бы себя `v-for` с `:key` в Vue.</li></ul></div>
+<div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Почему <code>escapeHtml</code> нужна именно здесь, а не была нужна в сессии 6 с <code>createElement</code>/<code>textContent</code>? Что изменилось в способе вставки данных в DOM?</li><li>Откройте DevTools → Elements при смене статуса тикета. Что происходит с остальными элементами списка (не тем, что менялся) — они физически пересоздаются в DOM или остаются теми же узлами? Сравните с тем, как вёл бы себя <code>v-for</code> с <code>:key</code> в Vue.</li></ul></div>
 </div></div>
 <div class="step" id="step-8-3"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-8-3"></label><span class="num">Шаг 8.3</span>Тесты: reactive() (автотрекинг, батчинг) и store (откат при ошибке) на node --test<a class="anchor" href="#step-8-3">#</a></span><div class="step-body">
 <p>Тесты на чистую логику (без DOM, без сети) через <code>node --test</code> — store и reactive проверяются как обычные функции.</p><pre><code>// src/__tests__/reactive.test.js
@@ -2176,18 +2179,15 @@ test('три синхронных изменения — один перезап
 
   assert.equal(runs, 2);                               // 1 — начальный запуск, 2 — один батч на три изменения
 });</code></pre>
-<pre><code>// src/__tests__/store.test.js — store с ПОДМЕНЁННЫМ api.js (без реального fetch)
-import { test, mock } from 'node:test';
+<pre><code>// src/__tests__/store.test.js — updateTicketStatus подменяется через DI, без реального fetch
+import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-test('changeStatus откатывает при ошибке сервера', async (t) =&gt; {
-  const apiModule = await import('../web/app/api.js');
-  t.mock.method(apiModule, 'updateTicketStatus', async () =&gt; { throw new Error('503'); });   // node:test встроенный мок модуля
-
+test('changeStatus откатывает при ошибке сервера', async () =&gt; {
   const { store, changeStatus } = await import('../web/app/store.js');
   store.tickets = [{ id: 1, status: 'open' }];
 
-  await changeStatus(1, 'closed');
+  await changeStatus(1, 'closed', { updateTicketStatus: async () =&gt; { throw new Error('503'); } });   // подменённая зависимость вместо мока модуля
 
   assert.equal(store.tickets[0].status, 'open');       // откатилось обратно после неудачного PATCH
   assert.match(store.error, /Не удалось сохранить/);
@@ -2203,7 +2203,7 @@ test('changeStatus откатывает при ошибке сервера', asy
 tests 4
 pass 4
 fail 0</pre></div>
-<div class="why"><b>Зачем:</b> <code>t.mock.method()</code> — встроенный в <code>node:test</code> механизм подмены метода модуля, аналог <code>vi.mock</code> из Vitest, но без единой внешней зависимости. Тесты на <code>reactive()</code> проверяют именно то, что было «под капотом» в 7.3: автотрекинг (второй тест) и батчинг (третий) — теперь как формальная гарантия, а не только наблюдение в консоли. Store тестируется без браузера и без сети — то же разделение слоёв, что в Vue-лабе (компонент/store/api), только на чистом JS.</div>
+<div class="why"><b>Зачем:</b> подменить <code>updateTicketStatus</code> через <code>t.mock.method()</code> на импортированном модуле не выйдет: объект-неймспейс ES-модуля неизменяем (Module Namespace Exotic Object), поэтому <code>changeStatus</code> принимает необязательный третий параметр <code>deps</code> — обычная подмена зависимости (DI), без единой внешней библиотеки и без экспериментальных флагов node:test. Тесты на <code>reactive()</code> проверяют именно то, что было «под капотом» в 7.3: автотрекинг (второй тест) и батчинг (третий) — теперь как формальная гарантия, а не только наблюдение в консоли. Store тестируется без браузера и без сети — то же разделение слоёв, что в Vue-лабе (компонент/store/api), только на чистом JS.</div>
 <div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Напишите тест на <code>loadTickets()</code>, подменяющий <code>fetchTickets</code> так, чтобы вернуть заранее заданный массив, и проверяющий, что <code>store.loading</code> становится <code>true</code>, а затем <code>false</code>.</li><li>Почему тесты на reactive используют <code>await new Promise(r =&gt; queueMicrotask(r))</code>, а не просто синхронную проверку сразу после <code>state.count = 1</code>? Свяжите ответ с разделом 9 и 7.3.</li></ul></div>
 </div></div>
 <div class="step" id="step-8-4"><span class="step-head"><label class="done-label" title="Отметить шаг пройденным"><input type="checkbox" class="done" data-key="step-8-4"></label><span class="num">Шаг 8.4</span>Финал: карта проекта и таблица «что Vue делает вместо вас»<a class="anchor" href="#step-8-4">#</a></span><div class="step-body">
@@ -2227,15 +2227,15 @@ fail 0</pre></div>
 <tr><td>Компонент с шаблоном</td><td><code>views.js</code>: функция → строка HTML</td><td>~20</td><td>переиспользуемость с props/emits, автоматическое экранирование (у Vue — всегда, у вас — вручную escapeHtml)</td></tr>
 <tr><td>Диффинг DOM (перерисовать только изменившееся)</td><td>нет — <code>innerHTML =</code> целиком при любом изменении</td><td>0 (сознательно не делали)</td><td>ВСЁ: сохранение фокуса инпута, скролла, состояния несвязанных элементов при ререндере — то, ради чего вообще существует virtual DOM</td></tr>
 <tr><td>Vue Router</td><td><code>router.js</code>: pushState + простой pattern-matching</td><td>~35</td><td>вложенные маршруты, guards, lazy loading, scroll behavior, query-параметры отдельно от path</td></tr>
-<tr><td>Pinia store</td><td><code>store.js</code>: reactive-объект + функции-экшены</td><td>~20</td><td>Devtools-интеграция, computed-геттеры с кэшированием, персистентность из коробки</td></tr>
-<tr><td>Reactivity Transform / SFC компиляция</td><td>нет — обычные .js файлы</td><td>0</td><td>синтаксический сахар <code>&lt;script setup&gt;</code>, автоматический unwrap ref в шаблоне, HMR</td></tr>
+<tr><td>Pinia store</td><td><code>store.js</code>: reactive-объект + функции-экшены</td><td>~20</td><td>Devtools-интеграция, computed-геттеры с кэшированием, персистентность через плагин (например, pinia-plugin-persistedstate)</td></tr>
+<tr><td>SFC-компиляция (<code>&lt;script setup&gt;</code>)</td><td>нет — обычные .js файлы</td><td>0</td><td>синтаксический сахар <code>&lt;script setup&gt;</code>, автоматический unwrap ref в шаблоне, HMR</td></tr>
 </table>
 <div class="why"><b>Зачем:</b> Разница не в том, что Vue «умнее» — реактивность у вас работает по тому же алгоритму. Разница в объёме РЕШЁННЫХ КРАЕВЫХ СЛУЧАЕВ: полный <code>@vue/reactivity</code> — несколько тысяч строк, покрывающих массивы, коллекции, отписки, приоритеты; ваш роутер в 35 строк не умеет ничего, кроме простейшего сопоставления пути — ни query-параметров, ни вложенности. Самое дорогое, чего у вас нет вообще — диффинг DOM: <code>innerHTML = </code> при каждом изменении сбрасывает фокус на инпуте, скролл, состояние незакрытого dropdown. Это не «недоделка» — это ЦЕНА простоты, и теперь вы видите её конкретно, а не абстрактно.</div>
 <div class="note-box"><span class="tag">ПРОВЕРЬ СЕБЯ</span><ul><li>Найдите в собственном коде (<code>main.js</code>) место, где ре-рендер списка тикетов сбросит состояние, если бы, скажем, у одного из <code>&lt;li&gt;</code> был раскрытый <code>&lt;details&gt;</code>. Опишите словами, что увидит пользователь.</li><li>Пройдите по всем 8 сессиям и назовите три концепции, которые, как вы теперь понимаете, Vue использовал у вас под носом, а вы этого не замечали, пока не написали руками.</li></ul></div>
 </div></div>
 <div class="next-box"><span class="tag">ИТОГ СЕССИИ 8</span><ul>
 <li>✅ <code>git commit -am "session 8: mini-spa, tests, vue comparison"</code></li>
-<li>📝 Ответы 8.1–8.4. Теперь разделы 19 — письменно, как финальная проверка.</li>
+<li>📝 Ответы 8.1–8.4. Теперь раздел 19 — письменно, как финальная проверка.</li>
 </ul></div>
 
 <h2 id="sec-17"><label class="done-label" title="Отметить раздел пройденным"><input type="checkbox" class="done" data-key="sec-17"></label>17. Чек-лист: концепция ↔ где она в коде <a class="anchor" href="#sec-17">#</a></h2>
@@ -2342,7 +2342,7 @@ fail 0</pre></div>
 <ul>
 <li>Что такое делегирование событий и какую проблему оно решает?</li>
 <li>В чём разница между textContent и innerHTML с точки зрения безопасности?</li>
-<li>Чем ESM отличается от CommonJS помимo синтаксиса — статическая vs динамическая природа?</li>
+<li>Чем ESM отличается от CommonJS помимо синтаксиса — статическая vs динамическая природа?</li>
 <li>Что бандлер (Vite/Webpack) добавляет поверх нативных возможностей браузера, а что было бы доступно и без него?</li>
 </ul>
 <h3>Реактивность и архитектура</h3>
