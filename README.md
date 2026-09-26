@@ -2,7 +2,7 @@
 
 ![JavaScript](JavaScript.png)
 
-> **24.09.2026 — методичка вычитана и исправлена.** Что найдено и что поправлено — в [fixes/js.md](https://github.com/meeymirita/submodule-group-lab/blob/main/fixes/js.md) сборного репозитория.
+> **24.09.2026 — методичка вычитана и исправлена.** Что найдено и что поправлено — в [fixes/js.md](https://github.com/meeymirita/lab-fixes/blob/main/js.md) репозитория `lab-fixes`.
 
 **Статус: ⚪ методичка готова, прохождение впереди.**
 **Сложность: средняя.** Не требует предыдущих лаб — нужен только базовый синтаксис JS. Полезно проходить до Vue Lab и TypeScript Lab: это их общий фундамент.
