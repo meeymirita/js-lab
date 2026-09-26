@@ -28,4 +28,4 @@ JavaScript (ES2022+, без TypeScript и без сборки) + Node 22+ (24 LT
 
 ---
 
-Часть сборного репозитория лабораторных работ — [submodule-group-lab](https://github.com/meeymirita/submodule-group-lab).
+Часть сборного репозитория лабораторных работ — [anitech-performance](https://github.com/meeymirita/anitech-performance).
