@@ -1,6 +1,6 @@
 # Чистый JS Lab — Vanilla Helpdesk
 
-![JavaScript](https://meeymirita-files.storage.yandexcloud.net/js/JavaScript.png)
+![JavaScript](https://raw.githubusercontent.com/meeymirita/works-lab/main/images/js.png)
 
 > **24.09.2026 — методичка вычитана и исправлена.** Что найдено и что поправлено — в [fixes/frontend/js.md](https://github.com/meeymirita/lab-fixes/blob/main/frontend/js.md) репозитория `lab-fixes`.
 
